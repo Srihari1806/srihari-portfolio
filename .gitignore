@@ -38,3 +38,5 @@ next-env.d.ts
 # archives & logs
 *.zip
 server.log
+
+.vercel
