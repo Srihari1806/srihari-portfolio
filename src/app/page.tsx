@@ -5,7 +5,7 @@ export default function Page() {
   return (
     <>
       <HomePage />
-      {/* the train-ride intro, once per visit (add ?ride to the URL to ride again) */}
+      {/* the train-ride intro: the entry point on every load and refresh */}
       <TrainRide />
       <noscript>
         <style>{'.ride{display:none!important}html.ride-on,html.ride-on body{overflow:auto!important}'}</style>

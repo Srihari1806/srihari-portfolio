@@ -1,19 +1,22 @@
 'use client';
 
-/* The ride that opens the portfolio, once per visit: the departure board (LoadingScreen), the dive
-   into a coach window, then the cabin (RideCabin), where scrolling rides past every page. Stepping
-   off, or skipping, reveals the homepage underneath. Add ?ride to the URL to ride again. */
+/* The ride that opens the portfolio, on every load and refresh of the homepage: the departure board
+   (LoadingScreen), the dive into a coach window, then the cabin (RideCabin), where scrolling rides
+   past every page. Stepping off, or skipping, reveals the homepage underneath. */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import gsap from 'gsap';
-import { CABIN, RIDE_KEY, stops } from '@/data/ride';
+import { CABIN, stops } from '@/data/ride';
 import { LoadingScreen, type LoadingHandle } from './LoadingScreen';
 import { RideCabin } from './RideCabin';
 import '@fontsource/vt323/400.css';
 import './ride.css';
 
 type Phase = 'idle' | 'loading' | 'diving' | 'cabin' | 'leaving' | 'gone';
+/* in memory only: a refresh or a fresh visit always starts with the ride, while coming back to the
+   homepage from inside the site (after stepping off) goes straight to it */
+let riddenThisLoad = false;
 const MIN_LOAD_MS = 3400;
 
 function preload(srcs: string[], onEach: (done: number) => void) {
@@ -35,22 +38,12 @@ function preload(srcs: string[], onEach: (done: number) => void) {
 
 export function TrainRide() {
   const reduce = !!useReducedMotion();
-  const [phase, setPhase] = useState<Phase>('idle');
+  const [phase, setPhase] = useState<Phase>(() => (riddenThisLoad ? 'gone' : 'idle'));
   const [progress, setProgress] = useState(0);
   const [cabinIn, setCabinIn] = useState(false);
   const loadRef = useRef<LoadingHandle>(null);
   const boardRef = useRef<HTMLDivElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
-
-  // already ridden this visit (and not asked to ride again): straight to the homepage
-  useEffect(() => {
-    let again = false;
-    try {
-      again = new URLSearchParams(window.location.search).has('ride');
-      if (!again && sessionStorage.getItem(RIDE_KEY)) setPhase('gone');
-    } catch {}
-    if (again) document.documentElement.classList.remove('ride-done');
-  }, []);
 
   // the homepage underneath must not scroll, or take keyboard focus, while the ride is on
   useEffect(() => {
@@ -65,14 +58,11 @@ export function TrainRide() {
   }, [phase]);
 
   const finish = useCallback(() => {
-    try {
-      sessionStorage.setItem(RIDE_KEY, '1');
-    } catch {}
+    riddenThisLoad = true;
     setPhase('leaving');
     window.setTimeout(
       () => {
         setPhase('gone');
-        document.documentElement.classList.add('ride-done');
         window.scrollTo(0, 0);
       },
       reduce ? 50 : 650,

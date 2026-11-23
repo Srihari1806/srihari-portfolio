@@ -125,6 +125,3 @@ export const rideCopy = {
   skip: 'Skip the ride',
   boarding: 'Boarding',
 } as const;
-
-/** sessionStorage key: once ridden (or skipped) in this visit, the homepage opens straight away */
-export const RIDE_KEY = 'srihari_ride_done';

@@ -1,6 +1,5 @@
 /* ---------- the train ride intro (TrainRide.tsx) ---------- */
 html.ride-on, html.ride-on body { overflow: hidden !important; }
-html.ride-done .ride { display: none; }
 
 .ride {
   --g: #7dff8a;

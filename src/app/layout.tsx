@@ -42,10 +42,7 @@ export default function RootLayout({
         {/* apply the saved day/night mode before first paint, so night visitors never see a flash of day */}
         <script
           dangerouslySetInnerHTML={{
-            __html:
-              "try{if(localStorage.getItem('srihari_portfolio_mode')==='tfi'){document.documentElement.classList.add('tfi-theme','dark')}}catch(e){}" +
-              // already took the train-ride intro this visit: keep it from flashing up before the page loads
-              "try{if(sessionStorage.getItem('srihari_ride_done')&&!/[?&]ride/.test(location.search)){document.documentElement.classList.add('ride-done')}}catch(e){}",
+            __html: "try{if(localStorage.getItem('srihari_portfolio_mode')==='tfi'){document.documentElement.classList.add('tfi-theme','dark')}}catch(e){}",
           }}
         />
       </head>
