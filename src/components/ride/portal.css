@@ -1,0 +1,29 @@
+/* the train-window portal overlay and the Return to train button (PortalLayer.tsx) */
+.ride-portal {
+  position: fixed; inset: 0; z-index: 400; pointer-events: none; visibility: hidden; box-sizing: border-box;
+  background: #2a120f;
+  /* the padding is the cover, the content box is a hole the page shows through */
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+.ride-portal.is-on { visibility: visible; pointer-events: auto; }
+
+.portal-back {
+  position: fixed; z-index: 120; left: 16px; bottom: 16px; display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 14px 9px 11px; border-radius: 999px; border: 1px solid rgba(125, 255, 138, 0.35);
+  background: rgba(8, 12, 7, 0.82); color: #7dff8a; backdrop-filter: blur(8px); cursor: pointer;
+  font: 400 19px/1 'VT323', ui-monospace, Menlo, monospace; letter-spacing: 0.05em;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25); transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+.portal-back svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.portal-back:hover { transform: translateY(-2px); border-color: #7dff8a; background: rgba(8, 12, 7, 0.92); }
+.portal-back:focus-visible { outline: 2px solid #7dff8a; outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .portal-back { transition: none; } }
+/* per page: keep clear of each page's own controls */
+.portal-back--cinema { top: 66px; bottom: auto; }
+@media (max-width: 760px) {
+  .portal-back { padding: 9px 12px 9px 10px; font-size: 18px; }
+  .portal-back--work { left: auto; right: 12px; bottom: 14px; }
+  .portal-back--cinema { top: 62px; left: 10px; }
+}

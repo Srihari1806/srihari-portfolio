@@ -2,21 +2,34 @@
 
 /* The ride that opens the portfolio, on every load and refresh of the homepage: the departure board
    (LoadingScreen), the dive into a coach window, then the cabin (RideCabin), where scrolling rides
-   past every page. Stepping off, or skipping, reveals the homepage underneath. */
+   past every stop. Stepping off, or skipping, reveals the homepage underneath.
+   Coming back from a stop ("Return to train", or the browser's Back) skips the board and puts the
+   visitor in the same seat, at the same stop. */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import gsap from 'gsap';
 import { CABIN, stops } from '@/data/ride';
+import { hasBooted, peekReturning, readJourney, saveJourney, takeReturning } from './journey';
 import { LoadingScreen, type LoadingHandle } from './LoadingScreen';
 import { RideCabin } from './RideCabin';
 import '@fontsource/vt323/400.css';
 import './ride.css';
 
 type Phase = 'idle' | 'loading' | 'diving' | 'cabin' | 'leaving' | 'gone';
-/* in memory only: a refresh or a fresh visit always starts with the ride, while coming back to the
-   homepage from inside the site (after stepping off) goes straight to it */
-let riddenThisLoad = false;
+type Start = { phase: Phase; entry: 'intro' | 'return' | 'resume'; at: number };
+
+/** how this mount begins. A fresh load or a refresh is always the full intro (and matches the server
+    render); arriving here from inside the site picks the journey up where it was left. */
+function decideStart(): Start {
+  if (typeof window === 'undefined' || !hasBooted()) return { phase: 'idle', entry: 'intro', at: 0 };
+  const ret = peekReturning();
+  if (ret) return { phase: 'cabin', entry: 'return', at: stops.findIndex((s) => s.key === ret) };
+  const j = readJourney();
+  if (j?.mode === 'riding') return { phase: 'cabin', entry: 'resume', at: Math.min(stops.length - 1, Math.max(0, j.progress)) };
+  if (j?.mode === 'off') return { phase: 'gone', entry: 'intro', at: 0 };
+  return { phase: 'idle', entry: 'intro', at: 0 };
+}
 const MIN_LOAD_MS = 3400;
 
 function preload(srcs: string[], onEach: (done: number) => void) {
@@ -38,9 +51,13 @@ function preload(srcs: string[], onEach: (done: number) => void) {
 
 export function TrainRide() {
   const reduce = !!useReducedMotion();
-  const [phase, setPhase] = useState<Phase>(() => (riddenThisLoad ? 'gone' : 'idle'));
+  const [begin] = useState(decideStart);
+  const [phase, setPhase] = useState<Phase>(begin.phase);
   const [progress, setProgress] = useState(0);
-  const [cabinIn, setCabinIn] = useState(false);
+  const [cabinIn, setCabinIn] = useState(begin.phase === 'cabin');
+  useEffect(() => {
+    if (begin.entry === 'return') takeReturning();
+  }, [begin.entry]);
   const loadRef = useRef<LoadingHandle>(null);
   const boardRef = useRef<HTMLDivElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -58,7 +75,7 @@ export function TrainRide() {
   }, [phase]);
 
   const finish = useCallback(() => {
-    riddenThisLoad = true;
+    saveJourney({ mode: 'off' });
     setPhase('leaving');
     window.setTimeout(
       () => {
@@ -96,7 +113,7 @@ export function TrainRide() {
   const start = useCallback(() => {
     if (phase !== 'idle') return;
     setPhase('loading');
-    const srcs = [CABIN.src, ...stops.map((s) => s.view).filter(Boolean)];
+    const srcs = [CABIN.src, '/projects/cricfield.jpg', '/projects/hiremap.jpg', '/projects/cinephile.jpg'];
     let loaded = 0;
     const all = preload(srcs, (d) => (loaded = d / srcs.length));
     let ready = false;
@@ -132,7 +149,7 @@ export function TrainRide() {
 
   return (
     <div ref={rootRef} className={`ride ${phase === 'leaving' ? 'is-leaving' : ''}`} role="region" aria-label="Portfolio intro: a train ride">
-      {cabinIn && <RideCabin reduce={reduce} entering onExit={finish} />}
+      {cabinIn && <RideCabin reduce={reduce} entry={begin.entry} startAt={begin.at} onExit={finish} />}
       {boardOn && (
         <div ref={boardRef} className="ride-board">
           <LoadingScreen ref={loadRef} phase={phase as 'idle' | 'loading' | 'diving'} progress={progress} onStart={start} onSkip={finish} />

@@ -123,59 +123,22 @@ html.ride-on, html.ride-on body { overflow: hidden !important; }
 /* ---------- inside the cabin ---------- */
 .rc {
   position: absolute; inset: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; outline: none;
-  scroll-snap-type: y proximity; scrollbar-width: none; background: linear-gradient(#2a2e25, #262a21 55%, #1b1e17);
+  scrollbar-width: none; background: linear-gradient(#2a2e25, #262a21 55%, #1b1e17);
 }
 .rc::-webkit-scrollbar { display: none; }
-.rc-leg { scroll-snap-align: start; }
-.rc-stage { position: sticky; top: 0; height: 100vh; height: 100dvh; overflow: hidden; scroll-snap-align: start; }
+.rc-stage { position: sticky; top: 0; height: 100vh; height: 100dvh; overflow: hidden; }
 .rc-sway { position: absolute; inset: 0; will-change: transform; }
 .rc-cam { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
 .rc-cabin { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; user-select: none; }
-/* the cabin picture's own window glass is painted; the view sits just above it, inside the brass rim */
-.rc-window { position: absolute; overflow: hidden; z-index: 2; isolation: isolate; }
-.rc-view {
-  position: absolute; inset: 0; display: block; padding: 0; border: 0; background: #120d0b; cursor: pointer;
-  visibility: hidden; will-change: transform; color: inherit; text-decoration: none;
-}
-.rc-view--sky { background: transparent; cursor: default; visibility: visible; }
-.rc-view img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; transition: transform 0.6s ease, filter 0.6s ease; filter: saturate(0.92) brightness(0.94); }
-.rc-view:hover img, .rc-view:focus-visible img { transform: scale(1.025); filter: none; }
-.rc-view:focus-visible { outline: 3px solid var(--amber); outline-offset: -6px; }
-/* glass: a sunset reflection over the page, so it reads as seen through a window */
-.rc-view::after {
-  content: ''; position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(160deg, rgba(255, 190, 120, 0.16), transparent 35%, transparent 65%, rgba(255, 120, 60, 0.12)), linear-gradient(transparent 70%, rgba(20, 8, 4, 0.35));
-}
-.rc-plate {
-  position: absolute; left: 16px; bottom: 14px; z-index: 1; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
-  padding: 8px 12px 9px; border-radius: 10px; background: rgba(12, 8, 6, 0.78); color: #fbe7d6; font: 500 15px/1.2 var(--font-sans, 'DM Sans', system-ui);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
-}
-.rc-plate b { font: 400 22px/1 var(--px); letter-spacing: 0.06em; text-transform: uppercase; color: var(--g); }
-.rc-plate em { font-style: normal; font-weight: 700; color: var(--amber); margin-left: 6px; }
-.rc-tunnel { position: absolute; inset: 0; z-index: 3; pointer-events: none; opacity: 0; background: #0b0806; }
-.rc-streaks {
-  /* tunnel lamps smeared into streaks by speed, two rows of them, and the dim ribs of the tunnel wall */
-  position: absolute; inset: 0;
-  background:
-    linear-gradient(90deg, transparent 0 18%, rgba(255, 186, 110, 0.95) 22% 58%, transparent 66%),
-    linear-gradient(90deg, transparent 0 30%, rgba(255, 150, 70, 0.7) 36% 52%, transparent 60%),
-    linear-gradient(90deg, transparent 0 40%, rgba(255, 230, 190, 0.06) 40% 52%, transparent 52%);
-  background-size: 520px 5px, 380px 3px, 150px 100%;
-  background-repeat: repeat-x;
-  background-position-y: 34%, 72%, 0;
-  filter: blur(1.2px);
-}
-.rc-streaks::after {
-  content: ''; position: absolute; inset: 0;
-  background: radial-gradient(ellipse 70% 40% at 50% 34%, rgba(255, 160, 80, 0.16), transparent 70%), radial-gradient(ellipse 60% 30% at 50% 72%, rgba(255, 140, 60, 0.1), transparent 70%);
-}
-.rc-sides { position: absolute; inset: 0; z-index: 1; opacity: 0; pointer-events: none; }
-.rc-sides i { position: absolute; border-radius: 14px; background: #0b0806; }
-/* light from the tunnel lamps sliding across the cabin */
+/* the window: the world outside sits just above the painted glass, inside the brass rim */
+.rc-window { position: absolute; overflow: hidden; z-index: 2; isolation: isolate; background: #2a2440; }
+.rc-sides { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.rc-sides i { position: absolute; border-radius: 14px; background: linear-gradient(var(--rw-top, #6e5c8c), var(--rw-mid, #e98a5c) 62%, var(--rw-hor, #fbc47e)); opacity: 0.9; }
+.rc-sides i::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(115deg, transparent 30%, rgba(255, 230, 200, 0.12) 45%, transparent 60%); }
+/* low sun through the windows, flickering across the cabin as poles go by */
 .rc-light {
   position: absolute; inset: 0; z-index: 2; pointer-events: none; opacity: 0; mix-blend-mode: soft-light;
-  background: repeating-linear-gradient(100deg, transparent 0 380px, rgba(255, 190, 120, 0.9) 420px 470px, transparent 520px 900px);
+  background: repeating-linear-gradient(100deg, transparent 0 380px, rgba(20, 10, 10, 0.9) 420px 470px, transparent 520px 900px);
 }
 .rc-led {
   position: absolute; z-index: 4; overflow: hidden; display: flex; align-items: center; justify-content: center;
@@ -231,15 +194,12 @@ html.ride-on, html.ride-on body { overflow: hidden !important; }
   .rc-line button { padding: 8px 6px; }
   .rc-line button span { display: none; }
   .rc-line button[aria-current] span { display: inline; }
-  .rc-plate { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .rl-glass, .rl-beam, .rl--loading .rl-start span { animation: none !important; }
   .rc-led span { animation: none; }
-  .rc { scroll-snap-type: y mandatory; }
-  .rc-view img { transition: none; }
-}
+  }
 
 .rc-nudge {
   position: absolute; z-index: 6; left: 50%; bottom: calc(clamp(10px, 2.2vh, 22px) + 52px); transform: translateX(-50%); margin: 0;
@@ -255,4 +215,179 @@ html.ride-on, html.ride-on body { overflow: hidden !important; }
 }
 @media (orientation: portrait) and (min-width: 761px) and (max-width: 1100px) {
   .rl-scene svg { --w: 220vw; }
+}
+
+/* ---------- the portal from the cabin ---------- */
+.rc.is-portal { pointer-events: none; overflow: hidden; }
+.rc.is-portal .rc-line, .rc.is-portal .rc-card, .rc.is-portal .rc-exit, .rc.is-portal .rc-nudge, .rc.is-portal .rc-enter { opacity: 0; transition: opacity 0.3s; }
+.rc-landmark { position: absolute; left: 22%; right: 22%; top: 12%; bottom: 10%; z-index: 3; border: 0; padding: 0; background: transparent; cursor: zoom-in; border-radius: 18px; }
+.rc-landmark:hover { box-shadow: inset 0 0 0 2px rgba(255, 214, 150, 0.45), inset 0 0 40px rgba(255, 190, 110, 0.18); }
+.rc-enter {
+  position: absolute; z-index: 4; left: 50%; bottom: 14px; transform: translateX(-50%); display: inline-flex; align-items: baseline; gap: 8px; white-space: nowrap;
+  padding: 8px 14px 9px; border-radius: 999px; border: 1px solid rgba(255, 214, 150, 0.4); background: rgba(14, 9, 8, 0.8); color: #fbe7d6; cursor: pointer;
+  font: 600 14px/1.2 var(--font-sans, 'DM Sans', system-ui); box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35); animation: rc-enter-in 0.45s ease both;
+}
+.rc-enter b { font: 400 20px/1 var(--px); letter-spacing: 0.06em; text-transform: uppercase; color: var(--g); }
+.rc-enter span { color: var(--amber); font-weight: 800; }
+.rc-enter:hover, .rc-enter:focus-visible { background: rgba(14, 9, 8, 0.92); border-color: var(--amber); outline: none; }
+.rc-enter:focus-visible { box-shadow: 0 0 0 3px rgba(255, 164, 73, 0.6); }
+@keyframes rc-enter-in { from { opacity: 0; transform: translate(-50%, 8px); } }
+
+/* ---------- the world outside (World.tsx) ---------- */
+.rw { position: absolute; left: 0; top: 0; overflow: hidden; --rw-night: 0; background: linear-gradient(var(--rw-top, #6e5c8c), var(--rw-mid, #e98a5c) 58%, var(--rw-hor, #fbc47e) 66%); }
+.rw-sky-fill { position: absolute; inset: 0; }
+.rw-stars { position: absolute; inset: 0 0 45% 0; opacity: calc((var(--rw-night) - 0.55) * 2.4);
+  background-image: radial-gradient(1px 1px at 12% 20%, #fff, transparent), radial-gradient(1px 1px at 28% 8%, #fff, transparent), radial-gradient(1.3px 1.3px at 44% 26%, #fff, transparent),
+    radial-gradient(1px 1px at 61% 12%, #fff, transparent), radial-gradient(1px 1px at 72% 30%, #fff, transparent), radial-gradient(1.2px 1.2px at 86% 16%, #fff, transparent), radial-gradient(1px 1px at 94% 34%, #fff, transparent), radial-gradient(1px 1px at 5% 36%, #fff, transparent);
+}
+.rw-layer { position: absolute; left: 0; top: 0; will-change: transform; overflow: visible; }
+.rw-sun { opacity: calc(1 - var(--rw-night) * 1.4); }
+.rw-haze2 { fill: #b77a8a; opacity: 0.55; }
+.rw-haze1 { fill: #8c5d7a; opacity: 0.75; }
+.rw-far .rw-haze1 path, .rw-far path.rw-haze1 { stroke: none; }
+.rw-beacon { fill: #fff6d0; filter: drop-shadow(0 0 4px #fff2b0); animation: rw-beacon 3s steps(1) infinite; }
+@keyframes rw-beacon { 0%, 60% { opacity: 1; } 61%, 100% { opacity: 0.25; } }
+.rw-beam { fill: rgba(255, 244, 200, 0.16); transform-box: fill-box; transform-origin: 100% 50%; animation: rw-sweep 6s ease-in-out infinite; }
+@keyframes rw-sweep { 0%, 100% { transform: scaleX(1); opacity: 0.8; } 50% { transform: scaleX(0.15); opacity: 0.15; } }
+.rw-glints rect { fill: rgba(255, 228, 190, 0.5); animation: rw-glint 4s ease-in-out infinite; }
+.rw-glints rect:nth-child(3n) { animation-delay: -1.3s; }
+.rw-glints rect:nth-child(3n + 1) { animation-delay: -2.6s; }
+@keyframes rw-glint { 50% { opacity: 0.2; } }
+.rw-ship path { fill: #4e3550; }
+.rw-sky rect, .rw-sky path, .rw-mid-hill, .rw-mid-hill path { fill: #5d3c5e; }
+.rw-mid .rw-sky rect { fill: #5a3a5c; }
+.rw-mid .rw-win { fill: #ffd59a; opacity: 0.8; }
+.rw-charminar path { fill: #563857; }
+.rw-charminar .rw-arch { fill: #6e4a68; }
+.rw-charminar .rw-ring { fill: none; stroke: #6e4a68; stroke-width: 1.4; }
+.rw-road-far { fill: none; stroke: #7a5670; stroke-width: 3; }
+.rw-lamp { fill: #ffd28a; }
+.rw-glow { fill: rgba(255, 196, 110, 0.26); }
+
+.rw-main path, .rw-main rect, .rw-main circle { vector-effect: non-scaling-stroke; }
+.rw-sand { fill: #b9846e; }
+.rw-sub path { fill: #2a2230; }
+.rw-sub .rw-pole { fill: none; stroke: #2a2230; stroke-width: 2; }
+.rw-sub .rw-plinth { fill: #6a5058; }
+.rw-seawall { fill: #6e5260; }
+.rw-railing { fill: none; stroke: #3e2c38; stroke-width: 1.4; }
+.rw-road { fill: #4a3a48; }
+.rw-road--curve { fill: #514050; }
+.rw-dash { fill: none; stroke: #f2d6a8; stroke-width: 1.6; stroke-dasharray: 14 12; opacity: 0.75; }
+.rw-dash--curve { stroke-dasharray: 6 6; stroke-width: 1.2; }
+.rw-kerb { fill: none; stroke: #6e5462; stroke-width: 2; }
+.rw-pole { fill: none; stroke: #2e2230; stroke-width: 2; stroke-linecap: round; }
+.rw-pole--thick { stroke-width: 4; }
+.rw-tree path { fill: #3b3a3a; }
+.rw-tree { color: #3a3436; }
+.rw-tree path:not(.rw-trunk) { fill: #3d4038; }
+.rw-tree .rw-trunk { fill: #3a2c2c; stroke: #3a2c2c; stroke-width: 3; }
+.rw-house { stroke: rgba(30, 18, 26, 0.35); stroke-width: 1; }
+.rw-ledge { fill: #4a3442; }
+.rw-shutter { fill: #5a4a52; }
+.rw-win3 { fill: #ffd08a; opacity: 0.85; }
+.rw-win-off { fill: #3c2d3a; }
+.rw-tank { fill: #2f3a44; }
+.rw-wall { fill: #7a5e5e; stroke: #4a3442; stroke-width: 1.5; }
+.rw-balcony { fill: #4a3442; }
+.rw-shopsign { opacity: 0.9; }
+.rw-shop-lit { fill: #ffcf8f; opacity: 0.9; }
+.rw-footpath { fill: #6a5560; }
+.rw-barrier { fill: none; stroke: #c9c3c8; stroke-width: 3; }
+.rw-barrier-shadow { fill: #3e2f3a; }
+.rw-board { fill: #2a2026; }
+.rw-board-strip { fill: #120c10; }
+.rw-board-name { fill: #ffe3b6; font: 700 10px/1 'DM Sans', system-ui, sans-serif; }
+.rw-board-line { fill: #c9b19b; font: 500 8px/1 'DM Sans', system-ui, sans-serif; }
+.rw-spot { fill: rgba(255, 236, 190, 0.12); }
+.rw-milestone path { fill: #f2eadb; stroke: #3a2c34; stroke-width: 1.4; }
+.rw-milestone .rw-milestone-band { fill: none; stroke: #e7a33c; stroke-width: 6; }
+.rw-milestone-txt { fill: #2a1e24; font: 800 7px/1 'DM Sans', system-ui, sans-serif; }
+.rw-car path { fill: #2a2230; }
+.rw-head { fill: #fff3c6; filter: drop-shadow(0 0 3px #fff3c6); }
+.rw-tail { fill: #ff5a4a; filter: drop-shadow(0 0 3px #ff5a4a); }
+.rw-car--a { animation: rw-drive 14s linear infinite; }
+.rw-car--b { animation: rw-drive 19s linear infinite reverse; }
+@keyframes rw-drive { from { transform: translateX(-60px); } to { transform: translateX(560px); } }
+
+.rw-th-top { fill: #3d6b62; stroke: #23443e; stroke-width: 1.5; }
+.rw-th-wall { fill: #47786d; stroke: #23443e; stroke-width: 1.5; }
+.rw-th-band { fill: none; stroke: #e9dcbd; stroke-width: 3; }
+.rw-th-sign { fill: #b3262e; stroke: #6a1418; stroke-width: 1.5; filter: drop-shadow(0 0 6px rgba(255, 90, 80, 0.4)); }
+.rw-th-signtxt { fill: #fbe7c2; font: 800 22px/1 'DM Serif Display', Georgia, serif; }
+.rw-th-marquee { fill: #f1e3c2; stroke: #8a5a2a; stroke-width: 2; }
+.rw-th-name { fill: #8e1d23; font: 400 28px/1 'DM Serif Display', Georgia, serif; letter-spacing: 6px; }
+.rw-bulbs circle { fill: #ffe2a0; }
+.rw-bulbs .b1 { animation: rw-chase 0.9s steps(1) infinite; }
+.rw-bulbs .b2 { animation: rw-chase 0.9s steps(1) infinite -0.45s; }
+@keyframes rw-chase { 0%, 49% { opacity: 1; filter: drop-shadow(0 0 2px #ffd27a); } 50%, 100% { opacity: 0.35; filter: none; } }
+.rw-poster { stroke: #1c1016; stroke-width: 1.5; }
+.rw-th-canopy { fill: #23443e; }
+.rw-th-door { stroke: #23443e; stroke-width: 2; }
+.rw-th-inside { fill: rgba(120, 50, 30, 0.12); }
+.rw-th-frame { fill: none; stroke: #7a4a2a; stroke-width: 1.5; }
+.rw-th-grill { fill: none; stroke: #5a3a2a; stroke-width: 1; }
+.rw-th-tix { fill: #fbe7c2; font: 700 5px/1 'DM Sans', system-ui, sans-serif; letter-spacing: 0.5px; }
+.rw-carpet { fill: #a3242c; }
+.rw-rail { fill: none; stroke: #d4b46a; stroke-width: 1.6; }
+.rw-auto-body { fill: #e3b23c; stroke: #2a2026; stroke-width: 1; }
+.rw-auto-roof { fill: none; stroke: #2a5a3a; stroke-width: 4; }
+.rw-wheel { fill: #1e171c; }
+
+.rw-lab-roof { fill: #463a48; stroke: #241c28; stroke-width: 1.5; }
+.rw-lab-wall { fill: #6e5258; stroke: #3a2a36; stroke-width: 1.5; }
+.rw-lab-sign { fill: #23302e; }
+.rw-lab-signtxt { fill: #9cf0a8; font: 700 10px/1 ui-monospace, Menlo, monospace; letter-spacing: 1.5px; }
+.rw-lab-tag { fill: #f2e6cc; stroke: #6a4a2a; stroke-width: 1; }
+.rw-lab-tagtxt { fill: #6a3a1a; font: 700 8px/1 'Shadows Into Light Two', 'DM Sans', cursive; }
+.rw-lab-glass { fill: #f6c27e; }
+.rw-lab-room { fill: url(#rw-ground); opacity: 0.18; }
+.rw-lab-peg { fill: #c99a62; stroke: #8a6436; stroke-width: 1; }
+.rw-pcb { fill: #2f7a4a; stroke: #1c4a2c; stroke-width: 0.8; }
+.rw-scope { fill: #3a3a42; stroke: #22222a; stroke-width: 1; }
+.rw-scope-screen { fill: #0c2014; }
+.rw-wave { fill: none; stroke: #7dff8a; stroke-width: 1.4; filter: drop-shadow(0 0 2px #7dff8a); stroke-dasharray: 4 2; animation: rw-wave 0.8s linear infinite; }
+@keyframes rw-wave { to { stroke-dashoffset: -12; } }
+.rw-knob { fill: none; stroke: #c9c9d2; stroke-width: 2; stroke-linecap: round; }
+.rw-monitor { fill: #1a1d2a; stroke: #0e1018; stroke-width: 1; }
+.rw-code { fill: none; stroke: #7ab8ff; stroke-width: 1.4; opacity: 0.8; }
+.rw-labcone { fill: rgba(255, 236, 170, 0.35); }
+.rw-bench { fill: #6a4630; }
+.rw-iron { fill: none; stroke: #c9c9d2; stroke-width: 1.6; }
+.rw-smoke { fill: none; stroke: rgba(255, 255, 255, 0.55); stroke-width: 1; animation: rw-smoke 2.4s ease-in-out infinite; }
+@keyframes rw-smoke { 50% { transform: translateY(-3px); opacity: 0.3; } }
+.rw-lab-mullion { fill: none; stroke: #4a3442; stroke-width: 3; }
+.rw-lab-door { fill: #4a3a3a; stroke: #2e2430; stroke-width: 1.5; }
+.rw-transformer { fill: #5a6a70; stroke: #2e2430; stroke-width: 1; }
+
+.rw-home-wall { fill: #8f7682; stroke: #3e2e3c; stroke-width: 1.5; }
+.rw-home-wall--up { fill: #9b818c; }
+.rw-parapet { fill: none; stroke: #5a4048; stroke-width: 2; }
+.rw-string { fill: none; stroke: #2e2230; stroke-width: 0.8; }
+.rw-fairy { fill: #ffe2a0; }
+.rw-fairy.f1 { animation: rw-twinkle 2.4s ease-in-out infinite; }
+.rw-fairy.f2 { animation: rw-twinkle 2.4s ease-in-out infinite -0.8s; }
+.rw-fairy.f3 { animation: rw-twinkle 2.4s ease-in-out infinite -1.6s; }
+@keyframes rw-twinkle { 0%, 100% { opacity: 1; filter: drop-shadow(0 0 3px #ffd27a); } 50% { opacity: 0.45; filter: none; } }
+.rw-pot { fill: #a5583a; }
+.rw-leaf { fill: #4f7a44; }
+.rw-chair { fill: none; stroke: #4a3442; stroke-width: 2; }
+.rw-guitar ellipse, .rw-guitar path { fill: #8a4a28; stroke: #3e2016; stroke-width: 1; }
+.rw-home-win { fill: #ffcf86; }
+.rw-home-mull { fill: none; stroke: #6a4a3a; stroke-width: 1.5; }
+.rw-curtain { fill: #b4524a; opacity: 0.8; }
+.rw-home-door { fill: #6a3e2a; stroke: #3e2016; stroke-width: 1.5; }
+.rw-stairs { fill: none; stroke: #6a5056; stroke-width: 2.4; }
+.rw-bat { fill: #e9cf9a; stroke: #6a4a2a; stroke-width: 1; }
+.rw-tulsi { fill: #b46a3a; stroke: #6a3a1a; stroke-width: 1; }
+.rw-gate { fill: none; stroke: #4a3442; stroke-width: 2; }
+
+.rw-near-pole { fill: none; stroke: #140e12; stroke-width: 9; }
+.rw-near-arm { fill: none; stroke: #140e12; stroke-width: 4; }
+.rw-wire { fill: none; stroke: rgba(20, 14, 18, 0.75); stroke-width: 1.4; }
+.rw-bush { fill: #1b1a18; }
+.rw-near-edge { fill: none; stroke: #120d10; stroke-width: 22; }
+
+@media (prefers-reduced-motion: reduce) {
+  .rw-car, .rw-bulbs circle, .rw-fairy, .rw-wave, .rw-smoke, .rw-beam, .rw-beacon, .rw-glints rect, .rc-enter { animation: none !important; }
 }

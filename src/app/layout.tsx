@@ -7,6 +7,7 @@ import '@fontsource/shadows-into-light-two/400.css';
 import './globals.css';
 import { ModeProvider } from '@/context/ModeContext';
 import { RoleProvider } from '@/context/RoleContext';
+import { PortalLayer } from '@/components/ride/PortalLayer';
 
 export const metadata: Metadata = {
   title: 'Srihari | Interactive Portfolio & Multi-Disciplinary Builder',
@@ -50,6 +51,8 @@ export default function RootLayout({
         <ModeProvider>
           <RoleProvider>
             <main className="flex-1">{children}</main>
+            {/* the train-window portal: dives into stops and the Return to train button on them */}
+            <PortalLayer />
           </RoleProvider>
         </ModeProvider>
       </body>

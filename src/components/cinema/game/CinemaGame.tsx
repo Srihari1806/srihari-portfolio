@@ -37,7 +37,10 @@ export function CinemaGame({user}:{user:string}){
       engine.current=openTheatre(canvas.current,{state:setState,failed:fail},media.matches);
       engine.current.pause(Boolean(panelRef.current));setStatus('ready');
     }).catch(fail);
-    return ()=>{alive=false;media.removeEventListener('change',quiet);engine.current?.dispose();engine.current=null;};
+    // leaving through the train window: stop drawing the theatre so the train can load quickly
+    const leaving=(e:Event)=>{if((e as CustomEvent<{type:string}>).detail?.type==='leaving')engine.current?.pause(true);};
+    window.addEventListener('srihari:portal',leaving);
+    return ()=>{alive=false;window.removeEventListener('srihari:portal',leaving);media.removeEventListener('change',quiet);engine.current?.dispose();engine.current=null;};
   },[retry,show]);
   useEffect(()=>{
     if(panel){if(!dialog.current?.open)dialog.current?.showModal();}
