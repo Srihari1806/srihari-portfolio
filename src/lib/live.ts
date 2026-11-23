@@ -17,7 +17,7 @@ export type FilmEntry = {
 export type TvVideo = { id: string; name: string; kind: 'trailer' | 'teaser' | 'song'; via: 'tmdb' | 'youtube' };
 export type TvFilm = FilmEntry & { video: TvVideo | null };
 export type TvFeed = { source: LiveSource; films: TvFilm[]; fetchedAt?: string; reason?: string };
-export type FilmFeed = { source: LiveSource; entries: FilmEntry[]; fetchedAt?: string; reason?: string };
+export type FilmFeed = { source: LiveSource; entries: FilmEntry[]; reviews?: FilmEntry[]; fetchedAt?: string; reason?: string };
 
 export type Track = {
   title: string;

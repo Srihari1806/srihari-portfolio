@@ -4,6 +4,14 @@ import { useEffect, useState, type RefObject } from 'react';
 import { signs } from '@/data/roadtrip';
 
 export type RoadPoint = { x: number; y: number; a: number };
+export type SpeedBreaker = {
+  id: string;
+  x: number;
+  y: number;
+  a: number; // angle of the road in degrees (0 = down)
+  w: number; // width across the road
+};
+
 export type RoadModel = {
   width: number;
   roadW: number;
@@ -16,6 +24,7 @@ export type RoadModel = {
   /** coarse path for the minimap, and where each kilometre starts */
   path: [number, number][];
   checkpoints: { km: number; y: number }[];
+  speedBreakers: SpeedBreaker[];
 };
 
 type Seg = { kind: 'line'; p0: [number, number]; p1: [number, number] } | { kind: 'curve'; p: [number, number][] };
@@ -92,6 +101,7 @@ type Layout = {
   marquees: { x: number; y: number }[];
   signs: { x: number; y: number; lines: string[]; side: 1 | -1 }[];
   lamps: { x: number; y: number; dir: 1 | -1 }[];
+  speedBreakers: SpeedBreaker[];
 };
 
 /**
@@ -220,14 +230,35 @@ export function SunsetRoad({
       });
 
       const pts = sampleSegs([...pre, ...post]);
+      const sampler = makeSampler(pts);
       const path: [number, number][] = [];
       for (let yy = 0; yy <= endY; yy += 40) {
-        const p = makeSampler(pts)(yy);
+        const p = sampler(yy);
         path.push([Math.round(p.x), Math.round(p.y)]);
       }
-      const model: RoadModel = { width: W, roadW, roadW2, lane, startX, endY, sample: makeSampler(pts), merge, path, checkpoints };
+
+      // Calculate speed breakers for the 3 KM project stops (CricField, HireMap, Cinephile)
+      const speedBreakers: SpeedBreaker[] = [];
+      const projectIds = ['builds', 'build-hiremap', 'build-cinephile'];
+      projectIds.forEach((pid) => {
+        const targetBlock = blocks.find((blk) => blk.id === pid);
+        if (targetBlock) {
+          // Position beside the billboard: roughly near the middle/upper-middle of the stop
+          const humpY = targetBlock.top + (mobile ? 140 : 260);
+          const pt = sampler(humpY);
+          speedBreakers.push({
+            id: pid,
+            x: pt.x,
+            y: pt.y,
+            a: pt.a,
+            w: (merged && humpY >= (merge?.joinY ?? Infinity) ? roadW2 : roadW) - (mobile ? 4 : 8),
+          });
+        }
+      });
+
+      const model: RoadModel = { width: W, roadW, roadW2, lane, startX, endY, sample: sampler, merge, path, checkpoints, speedBreakers };
       onModel(model);
-      setLayout({ W, H, roadW, roadW2, main: toD(pre), wide: post.length ? toD(post) : null, side: sideD, endY, endX, trees, lamps, bands, marquees, signs: signList });
+      setLayout({ W, H, roadW, roadW2, main: toD(pre), wide: post.length ? toD(post) : null, side: sideD, endY, endX, trees, lamps, bands, marquees, signs: signList, speedBreakers });
     };
 
     build();
@@ -241,7 +272,7 @@ export function SunsetRoad({
   }, [journeyRef, onModel]);
 
   if (!layout) return null;
-  const { W, H, roadW, roadW2, main, wide, side, endX, endY, trees, lamps, bands, marquees, signs: roadSigns } = layout;
+  const { W, H, roadW, roadW2, main, wide, side, endX, endY, trees, lamps, bands, marquees, signs: roadSigns, speedBreakers } = layout;
   const mobile = W < 700;
   const mw = (wide ? roadW2 : roadW) + (mobile ? 18 : 40);
 
@@ -305,6 +336,80 @@ export function SunsetRoad({
       {side && <Road d={side} />}
       {wide && <Road d={wide} w={roadW2} />}
       <Road d={main} />
+
+      {/* Speed-breakers: physically believable yellow-and-black striped humps following road angle */}
+      {speedBreakers.map((sb) => {
+        const h = mobile ? 12 : 16;
+        const w = sb.w;
+        const stripeW = mobile ? 8 : 12;
+        const stripeCount = Math.ceil(w / stripeW);
+        return (
+          <g
+            key={sb.id}
+            transform={`translate(${sb.x} ${sb.y}) rotate(${sb.a})`}
+            className="rt-speed-breaker"
+          >
+            {/* Ground contact shadow */}
+            <rect
+              x={-w / 2 - 2}
+              y={-h / 2 + 3}
+              width={w + 4}
+              height={h + 4}
+              rx={h / 2}
+              fill="rgba(20, 10, 10, 0.45)"
+            />
+            {/* Beveled asphalt curb/cushion */}
+            <rect
+              x={-w / 2}
+              y={-h / 2}
+              width={w}
+              height={h}
+              rx={h / 2}
+              fill="#1e1b1c"
+              stroke="#3a3435"
+              strokeWidth={1.5}
+            />
+            {/* Striped yellow and black segments */}
+            <g clipPath={`url(#sb-clip-${sb.id})`}>
+              <defs>
+                <clipPath id={`sb-clip-${sb.id}`}>
+                  <rect x={-w / 2} y={-h / 2} width={w} height={h} rx={h / 2} />
+                </clipPath>
+              </defs>
+              {Array.from({ length: stripeCount }, (_, idx) => {
+                const sx = -w / 2 + idx * stripeW;
+                const isYellow = idx % 2 === 0;
+                return (
+                  <rect
+                    key={idx}
+                    x={sx}
+                    y={-h / 2}
+                    width={stripeW}
+                    height={h}
+                    fill={isYellow ? '#FAA356' : '#201b1c'}
+                  />
+                );
+              })}
+              {/* Highlight / 3D specular crown for hump curvature */}
+              <rect
+                x={-w / 2}
+                y={-h / 2 + 1}
+                width={w}
+                height={h * 0.35}
+                fill="rgba(255, 255, 255, 0.3)"
+              />
+              {/* Bottom shadow for hump thickness */}
+              <rect
+                x={-w / 2}
+                y={h / 2 - h * 0.3}
+                width={w}
+                height={h * 0.3}
+                fill="rgba(0, 0, 0, 0.4)"
+              />
+            </g>
+          </g>
+        );
+      })}
       {/* end of road: barrier */}
       <g transform={`translate(${endX} ${endY})`}>
         <rect x={-((wide ? roadW2 : roadW) / 2 + 12)} y={-2} width={(wide ? roadW2 : roadW) + 24} height={10} rx={3} fill="#fff" stroke="#9c2c21" />

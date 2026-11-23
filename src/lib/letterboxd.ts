@@ -47,14 +47,23 @@ export function parseLetterboxdRss(xml: string, limit = 3): FilmEntry[] {
   return out;
 }
 
+/** A backdated review can be the newest RSS post; order actual watches by diary date. */
+export function recentDiaryEntries(input: string | FilmEntry[], limit = 3): FilmEntry[] {
+  return (typeof input === 'string' ? parseLetterboxdRss(input, 100) : input)
+    .filter(entry => Boolean(entry.watched))
+    .sort((a, b) => (b.watched ?? '').localeCompare(a.watched ?? ''))
+    .slice(0, limit);
+}
+
 /** Fetch a member's public diary feed (cached by Next for 30 minutes). Throws on failure. */
 export async function fetchDiary(user: string, limit = 3): Promise<FilmEntry[]> {
   const res = await fetch(`https://letterboxd.com/${encodeURIComponent(user)}/rss/`, {
     next: { revalidate: 1800 },
+    signal: AbortSignal.timeout(6000),
     headers: { 'User-Agent': 'srihari-portfolio (+room TV)' },
   });
   if (!res.ok) throw new Error(`Letterboxd HTTP ${res.status}`);
-  const entries = parseLetterboxdRss(await res.text(), limit);
+  const entries = recentDiaryEntries(await res.text(), limit);
   if (!entries.length) throw new Error('no diary entries');
   return entries;
 }

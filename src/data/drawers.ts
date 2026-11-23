@@ -41,7 +41,7 @@ export const deskDrawers: DeskDrawer[] = [
     tagline: 'Spiral release calendar, box office models & director tributes.',
     description: 'A Telugu cinephile desk: Devara, Pushpa 2, Kalki analysis, and interval screenwriting dissections.',
     itemsCount: 6,
-    route: '/creative#cinema',
+    route: '/cinema',
     previewItems: ['Spiral Movie Calendar', 'Theatrical Recovery Math', 'Rajamouli Visual Grammar', 'Letterboxd Diary'],
   },
   {

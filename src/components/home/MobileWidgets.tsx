@@ -127,7 +127,7 @@ function LabRow() {
           {lab.title}
         </h3>
         <p>{lab.text}</p>
-        <Link href={lab.href} className="hm-mw-lab-btn">
+        <Link href="/lab" className="hm-mw-lab-btn">
           Check the lab <ArrowUpRight aria-hidden="true" strokeWidth={1.9} />
         </Link>
       </div>

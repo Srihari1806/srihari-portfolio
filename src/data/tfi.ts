@@ -17,25 +17,38 @@ export type Quad = [[number, number], [number, number], [number, number], [numbe
    The sticker art itself is cut out of the illustration (src/assets/tfi/sticker-*.webp), so it looks
    identical at rest. `label`/`sub` are the accessible names; `href` is where each one goes. */
 export type StickerKey = 'work' | 'cinema' | 'play' | 'write' | 'music';
-export const stickers: { key: StickerKey; label: string; sub: string; href: string; box: Box }[] = [
-  { key: 'work', label: 'Work', sub: 'Projects · Builds · More', href: '/work', box: [244, 122, 424, 246] },
-  { key: 'cinema', label: 'Cinema', sub: 'Watches · Reviews · Lists', href: '/cinema', box: [240, 448, 462, 614] },
-  { key: 'play', label: 'Play', sub: 'Experiments · Lab · Fun', href: '/playground', box: [1152, 508, 1352, 630] },
-  { key: 'write', label: 'Write', sub: 'Notes · Scripts · Ideas', href: '/writing', box: [1166, 684, 1350, 804] },
-  { key: 'music', label: 'Music', sub: 'On repeat · Playlists', href: '#tfi-player', box: [346, 806, 532, 920] },
+/** what the boy is doing: each is a separately drawn shot (see `character` below) */
+export type PoseKey = 'rug' | 'desk' | 'tv' | 'sleep';
+// `pose`: hovering or focusing this sticker/object cuts to that shot (clicking still navigates)
+export const stickers: { key: StickerKey; label: string; sub: string; href: string; box: Box; pose?: PoseKey }[] = [
+  { key: 'work', label: 'Work', sub: 'Projects · Builds · More', href: '/work', box: [244, 122, 424, 246], pose: 'desk' },
+  { key: 'cinema', label: 'Cinema', sub: 'Watches · Reviews · Lists', href: '/cinema', box: [240, 448, 462, 614], pose: 'tv' },
+  { key: 'play', label: 'Play', sub: 'Experiments · Lab · Fun', href: '/playground', box: [1152, 508, 1352, 630], pose: 'rug' },
+  { key: 'write', label: 'Write', sub: 'Notes · Scripts · Ideas', href: '/writing', box: [1166, 684, 1350, 804], pose: 'rug' },
+  { key: 'music', label: 'Music', sub: 'On repeat · Playlists', href: '#tfi-player', box: [346, 806, 532, 920], pose: 'rug' },
 ];
 
 /* ---------------- clickable objects in the room ---------------- */
-export const objects: { key: string; label: string; href?: string; action?: 'calendar'; box: Box }[] = [
-  { key: 'laptop', label: 'Laptop — open my work', href: '/work', box: [380, 150, 528, 318] },
-  { key: 'tv', label: 'TV — cinema, watches and reviews', href: '/cinema', box: [30, 360, 262, 762] },
-  { key: 'calendar', label: 'Desk calendar — open the full calendar', action: 'calendar', box: [590, 194, 652, 266] },
-  { key: 'notebook', label: 'Notebook — writing', href: '/writing', box: [868, 640, 1110, 812] },
+export const objects: { key: string; label: string; href?: string; action?: 'calendar'; box: Box; pose?: PoseKey }[] = [
+  { key: 'laptop', label: 'Laptop — open my work', href: '/work', box: [380, 150, 528, 318], pose: 'desk' },
+  { key: 'tv', label: 'TV — cinema, watches and reviews', href: '/cinema', box: [30, 360, 262, 762], pose: 'tv' },
+  { key: 'calendar', label: 'Desk calendar — open the full calendar', action: 'calendar', box: [590, 194, 652, 266], pose: 'desk' },
+  { key: 'notebook', label: 'Notebook — writing', href: '/writing', box: [868, 640, 1110, 812], pose: 'rug' },
 ];
 
 /* ---------------- the boy ---------------- */
-// Closed-eye patch (src/assets/tfi/blink.png) is drawn here for a fraction of a second every few seconds.
+// Closed-eye patch (src/assets/tfi/blink.png) for the boy baked into room.webp. Used only until the
+// separate pose artwork exists (src/data/tfiPoses.json, made by scripts/tfi-poses/ingest.py).
 export const blinkBox: Box = [714, 450, 790, 478];
+export const character: {
+  /** rug shot: his face, lit by the phone he's scrolling (we see the phone's back, so the light is the tell) */
+  screenGlow: Box | null;
+  /** where each shot sits, so phones can pan the room to it after a cut */
+  centreX: Record<PoseKey, number>;
+} = {
+  screenGlow: [692, 424, 812, 534],
+  centreX: { rug: 790, desk: 430, tv: 1500, sleep: 1500 },
+};
 
 /* ---------------- TV: Letterboxd → official YouTube videos ----------------
    Set your Letterboxd username here (or LETTERBOXD_USERNAME in .env.local). The server reads your public
@@ -46,8 +59,8 @@ export const blinkBox: Box = [714, 450, 790, 478];
    Picks are verified as embeddable and cached in .cache/tv-videos.json. Until the username is set the TV
    keeps the illustration's own posters, and its label says so. Nothing is hardcoded. */
 export const letterboxd = {
-  username: '', // e.g. 'srihari'
-  profileUrl: filmDiary.href,
+  username: 'srihari_06', // public Letterboxd diary
+  profileUrl: 'https://letterboxd.com/srihari_06/',
   /** the TV screen inside the bezel, as drawn */
   screen: [
     [34, 542],

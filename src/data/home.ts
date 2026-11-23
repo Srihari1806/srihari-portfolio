@@ -3,9 +3,9 @@
 
 export const navLinks = [
   { label: 'work', href: '/work' },
-  { label: 'lab', href: '#lab' },
-  { label: 'cinema', href: '#cinema' },
-  { label: 'human', href: '#human' },
+  { label: 'cinema', href: '/cinema' },
+  { label: 'lab', href: '/lab' },
+  { label: 'human', href: '/human' },
 ] as const;
 
 export const contactHref = 'mailto:srihari.builds@gmail.com'; // TODO verify address
@@ -69,19 +69,19 @@ export const lab = {
 
 // Mobile bottom tab bar — anchors point at the phone-only sections.
 export const mobileTabs = [
-  { key: 'cse', label: 'CSE', href: '#work' },
-  { key: 'electronics', label: 'Electronics', href: '#lab-m' },
+  { key: 'cse', label: 'CSE', href: '/work' },
+  { key: 'electronics', label: 'Electronics', href: '/lab' },
   { key: 'cricket', label: 'Cricket', href: 'https://cricfield.in' },
-  { key: 'cinema', label: 'Cinema', href: '#cinema-m' },
+  { key: 'cinema', label: 'Cinema', href: '/cinema' },
   { key: 'music', label: 'Music', href: '#music-m' },
   { key: 'memes', label: 'Memes', href: '#memes-m' },
 ] as const;
 
 export const interests = [
-  { key: 'cse', label: 'CSE / Software', note: ['AI', 'Data', 'Web'], href: '#work' },
-  { key: 'electronics', label: 'Electronics', note: ['Circuits', 'Embedded'], href: '#lab' },
+  { key: 'cse', label: 'CSE / Software', note: ['AI', 'Data', 'Web'], href: '/work' },
+  { key: 'electronics', label: 'Electronics', note: ['Circuits', 'Embedded'], href: '/lab' },
   { key: 'cricket', label: 'Cricket', note: ['Analytics', 'Scouting'], href: 'https://cricfield.in' },
-  { key: 'cinema', label: 'Cinema', note: ['Films', 'Writing', 'Edits'], href: '#cinema' },
+  { key: 'cinema', label: 'Cinema', note: ['Films', 'Writing', 'Edits'], href: '/cinema' },
   { key: 'music', label: 'Music', note: ['Playlists', 'Discovery'], href: '#music' },
 ] as const;
 

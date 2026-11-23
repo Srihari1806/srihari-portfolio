@@ -9,6 +9,9 @@
 
 # next.js
 /.next/
+/.next-local/
+/.next-cinema-build/
+server-error.log
 /out/
 
 # production

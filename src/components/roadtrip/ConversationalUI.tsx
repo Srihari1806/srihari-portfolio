@@ -56,8 +56,8 @@ function Typing({ who }: { who: Speaker }) {
   );
 }
 
-/** Typing time before each message, so it reads like someone is actually typing. */
-const delayFor = (m: Msg, first: boolean) => (first ? 380 : 520) + Math.min(700, m.text.length * 11);
+/** Faster, snappier typing time so reading flow is natural and not bogged down by excessive delays. */
+const delayFor = (m: Msg, first: boolean) => (first ? 200 : 300) + Math.min(350, m.text.length * 6);
 
 /**
  * One scripted exchange, attached to whatever triggered it.
@@ -98,6 +98,7 @@ export function ConversationalUI({
     if (!auto || wasPlayed) return;
     const el = anchor.current;
     if (!el) return;
+    // Central viewing area: trigger when entering the middle 50% of the viewport
     const io = new IntersectionObserver(
       ([e]) => {
         if (e.isIntersecting) {
@@ -105,7 +106,7 @@ export function ConversationalUI({
           io.disconnect();
         }
       },
-      { rootMargin: '-28% 0px -28% 0px' },
+      { rootMargin: '-20% 0px -20% 0px' },
     );
     io.observe(el);
     return () => io.disconnect();
@@ -158,26 +159,47 @@ export function ConversationalUI({
             ))}
           </ol>
           {!done && <Typing who={lines[shown].who} />}
-          {done && replies && (
-            <motion.div
-              className="rt-replies"
-              initial={reduce ? false : { opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.25, delay: 0.1 }}
-            >
-              {replies.map((r) =>
-                r.href ? (
-                  <a key={r.label} className="rt-reply" href={r.href} target="_blank" rel="noopener noreferrer" onClick={() => onReply?.(r)}>
-                    {r.label} <ArrowUpRight aria-hidden="true" />
-                  </a>
-                ) : (
-                  <button key={r.label} type="button" className="rt-reply" onClick={() => handle(r)}>
-                    {r.label}
-                  </button>
-                ),
-              )}
-            </motion.div>
-          )}
+            {done && replies && (
+              <motion.div
+                className="rt-replies"
+                initial={reduce ? false : { opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.25, delay: 0.1 }}
+              >
+                {replies.map((r) =>
+                  r.href ? (
+                    <a key={r.label} className="rt-reply" href={r.href} target="_blank" rel="noopener noreferrer" onClick={() => onReply?.(r)}>
+                      {r.label} <ArrowUpRight aria-hidden="true" />
+                    </a>
+                  ) : (
+                    <button key={r.label} type="button" className="rt-reply" onClick={() => handle(r)}>
+                      {r.label}
+                    </button>
+                  ),
+                )}
+              </motion.div>
+            )}
+            {/* Replay action control available directly inside the active exchange once finished */}
+            {done && replay && (
+              <div className="rt-convo-inline-replay">
+                <button
+                  type="button"
+                  className="rt-convo-replay"
+                  onClick={() => {
+                    setShown(0);
+                    let i = 0;
+                    let t = window.setTimeout(function tick() {
+                      i += 1;
+                      setShown(i);
+                      if (i < lines.length) t = window.setTimeout(tick, delayFor(lines[i], false));
+                    }, delayFor(lines[0], true));
+                  }}
+                  aria-label={`Replay exchange: ${label}`}
+                >
+                  <RotateCcw aria-hidden="true" /> Replay conversation
+                </button>
+              </div>
+            )}
         </div>
       ) : wasPlayed && replay ? (
         <button type="button" className="rt-convo-replay" onClick={() => playChat(id)} aria-label={`Replay: ${label}`}>

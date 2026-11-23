@@ -103,7 +103,7 @@ async function tmdb(pathname: string, params: Record<string, string> = {}) {
   const url = new URL(`https://api.themoviedb.org/3${pathname}`);
   for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
   if (key) url.searchParams.set('api_key', key);
-  const res = await fetch(url, { headers: token ? { Authorization: `Bearer ${token}` } : {}, next: { revalidate: 86_400 } });
+  const res = await fetch(url, { headers: token ? { Authorization: `Bearer ${token}` } : {}, next: { revalidate: 86_400 }, signal: AbortSignal.timeout(5000) });
   if (!res.ok) throw new Error(`TMDB HTTP ${res.status}`);
   return res.json();
 }
@@ -139,7 +139,7 @@ async function findTmdbId(film: FilmEntry): Promise<number | undefined> {
   return j.results.find((r) => (norm(r.title) === want || norm(r.original_title) === want) && (!film.year || r.release_date?.startsWith(film.year)))?.id;
 }
 
-async function viaTmdb(film: FilmEntry): Promise<{ video: TvVideo | null; poster?: string; tmdbId?: number }> {
+async function viaTmdb(film: FilmEntry, officialOnly: boolean): Promise<{ video: TvVideo | null; poster?: string; tmdbId?: number }> {
   const id = await findTmdbId(film);
   if (!id) return { video: null };
   const d = (await tmdb(`/movie/${id}`, {
@@ -152,7 +152,8 @@ async function viaTmdb(film: FilmEntry): Promise<{ video: TvVideo | null; poster
   const ry = Number(d.release_date?.slice(0, 4));
   if (y && ry && Math.abs(y - ry) > 1) return { video: null, tmdbId: id };
   const poster = d.poster_path ? `https://image.tmdb.org/t/p/w342${d.poster_path}` : undefined;
-  for (const c of rankTmdbVideos(d.videos?.results ?? [], d.original_language).slice(0, 5)) {
+  const candidates = (d.videos?.results ?? []).filter(v => !officialOnly || (v.official === true && (v.type === 'Trailer' || v.type === 'Teaser')));
+  for (const c of rankTmdbVideos(candidates, d.original_language).slice(0, 5)) {
     if (await embeddable(c.id)) return { video: c, poster, tmdbId: id };
   }
   return { video: null, poster, tmdbId: id };
@@ -206,21 +207,21 @@ async function saveFile() {
 const keyOf = (f: FilmEntry) => (f.tmdbId ? `tmdb:${f.tmdbId}` : `t:${norm(f.title)}|${f.year ?? ''}`);
 
 /** The video (or null) for one diary film, from cache when fresh. */
-export async function resolveFilmVideo(film: FilmEntry): Promise<Resolved> {
+export async function resolveFilmVideo(film: FilmEntry, officialOnly = false): Promise<Resolved> {
   await loadFile();
-  const k = keyOf(film);
+  const k = (officialOnly ? 'official:' : '') + keyOf(film);
   const hit = mem.get(k);
   if (hit && Date.now() - hit.at < (hit.video ? TTL_FOUND : TTL_MISSING)) return hit;
   if (inflight.has(k)) return inflight.get(k)!;
   const job = (async () => {
     let out: Resolved = { video: null, at: Date.now() };
     try {
-      const t = await viaTmdb(film);
+      const t = await viaTmdb(film, officialOnly);
       out = { ...t, at: Date.now() };
     } catch {
       /* TMDB missing or down: try YouTube */
     }
-    if (!out.video) {
+    if (!out.video && !officialOnly) {
       try {
         out.video = await viaYoutube(film);
       } catch {

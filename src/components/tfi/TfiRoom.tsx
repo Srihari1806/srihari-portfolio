@@ -11,9 +11,10 @@ import stCinema from '@/assets/tfi/sticker-cinema.webp';
 import stPlay from '@/assets/tfi/sticker-play.webp';
 import stWrite from '@/assets/tfi/sticker-write.webp';
 import stMusic from '@/assets/tfi/sticker-music.webp';
-import { ROOM, blinkBox, letterboxd, objects, spotify, stickers, wallPhotos, type Box, type Quad, type StickerKey } from '@/data/tfi';
+import { ROOM, blinkBox, character, letterboxd, objects, spotify, stickers, wallPhotos, type Box, type PoseKey, type Quad, type StickerKey } from '@/data/tfi';
 import type { TrackFeed, TvFeed, TvFilm } from '@/lib/live';
 import { CalendarPanel } from './CalendarPanel';
+import { CutFrame, SceneSelector, TfiCharacter, charactersReady, usePoseDirector } from './TfiCharacter';
 import { quadTransform } from './quad';
 import { TvSet } from './TvSet';
 import { useNowPlaying, useTvFeed } from './useLive';
@@ -112,21 +113,26 @@ function PlayerOverlay({ feed }: { feed: TrackFeed }) {
 }
 
 /* ---------------- hotspots ---------------- */
-function Spot({ box, label, tip, href, onClick, className = '', id }: { box: Box; label: string; tip: string; href?: string; onClick?: () => void; className?: string; id?: string }) {
+type Cue = { onPointerEnter?: () => void; onPointerLeave?: () => void; onFocus?: () => void };
+/** hovering / focusing a thing in the room suggests the matching shot; clicks are untouched */
+const cueFor = (suggest: (p: PoseKey | undefined) => void, pose?: PoseKey): Cue =>
+  pose ? { onPointerEnter: () => suggest(pose), onPointerLeave: () => suggest(undefined), onFocus: () => suggest(pose) } : {};
+
+function Spot({ box, label, tip, href, onClick, className = '', id, cue = {} }: { box: Box; label: string; tip: string; href?: string; onClick?: () => void; className?: string; id?: string; cue?: Cue }) {
   const inner = <span className="tfi-tip">{tip}</span>;
   const cls = `tfi-spot ${className}`;
   if (href)
     return isExternal(href) ? (
-      <a id={id} className={cls} style={boxStyle(box)} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}>
+      <a id={id} className={cls} style={boxStyle(box)} href={href} target="_blank" rel="noopener noreferrer" aria-label={label} {...cue}>
         {inner}
       </a>
     ) : (
-      <Link id={id} className={cls} style={boxStyle(box)} href={href} aria-label={label}>
+      <Link id={id} className={cls} style={boxStyle(box)} href={href} aria-label={label} {...cue}>
         {inner}
       </Link>
     );
   return (
-    <button id={id} type="button" className={cls} style={boxStyle(box)} onClick={onClick} aria-label={label}>
+    <button id={id} type="button" className={cls} style={boxStyle(box)} onClick={onClick} aria-label={label} {...cue}>
       {inner}
     </button>
   );
@@ -150,14 +156,30 @@ function playerTip(s: TrackFeed | null) {
 export function TfiRoom() {
   const boxRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0);
+  const [scaleY, setScaleY] = useState(0);
   const [calOpen, setCalOpen] = useState(false);
   const tv = useTvFeed();
   const music = useNowPlaying();
+  const { pose, cutting, cutTo, suggest } = usePoseDirector();
+
+  // phones see part of the room at a time: after a cut, pan to where the new shot is
+  const firstPose = useRef(true);
+  useEffect(() => {
+    if (firstPose.current || !pose || !scale) return void (firstPose.current = false);
+    const stage = boxRef.current?.closest('.tfi-stage') as HTMLElement | null;
+    if (!stage || stage.scrollWidth <= stage.clientWidth + 2) return;
+    const x = character.centreX[pose] * scale;
+    if (x > stage.scrollLeft + 40 && x < stage.scrollLeft + stage.clientWidth - 40) return;
+    stage.scrollTo({ left: x - stage.clientWidth / 2, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  }, [pose, scale]);
 
   useEffect(() => {
     const el = boxRef.current;
     if (!el) return;
-    const ro = new ResizeObserver(([e]) => setScale(e.contentRect.width / ROOM.w));
+    const ro = new ResizeObserver(([e]) => {
+      setScale(e.contentRect.width / ROOM.w);
+      setScaleY(e.contentRect.height / ROOM.h);
+    });
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
@@ -174,14 +196,18 @@ export function TfiRoom() {
       <div className="tfi-room" ref={boxRef}>
         <Image
           src={room}
-          alt="Srihari's room at sunset, drawn from above: he lies on the rug with his phone, thinking about a HYD → TDX flight ticket; a desk with a laptop, a TV showing Letterboxd, a bed with a teddy bear, and a music console."
+          alt={
+            charactersReady
+              ? "Srihari's room at sunset, drawn from above: a rug with snacks and a notebook, a desk with a laptop, a TV showing Letterboxd, a bed with a teddy bear, and a music console. He moves between the rug, the desk and the bed."
+              : "Srihari's room at sunset, drawn from above: he lies on the rug with his phone, thinking about a HYD → TDX flight ticket; a desk with a laptop, a TV showing Letterboxd, a bed with a teddy bear, and a music console."
+          }
           fill
           priority
           placeholder="blur"
           sizes="(max-width: 760px) 1500px, 100vw"
           className="tfi-bg"
         />
-        <div className="tfi-layer" style={{ width: ROOM.w, height: ROOM.h, transform: `scale(${scale})`, visibility: scale ? 'visible' : 'hidden' }}>
+        <div className="tfi-layer" style={{ width: ROOM.w, height: ROOM.h, transform: `scale(${scale}, ${scaleY})`, visibility: scale && scaleY ? 'visible' : 'hidden' }}>
           {wallPhotos
             .filter((p) => p.src)
             .map((p) => (
@@ -190,9 +216,13 @@ export function TfiRoom() {
                 <img src={p.src} alt={p.label} />
               </OnQuad>
             ))}
-          {films.length > 0 && <TvSet films={films} live={tvLive} />}
+          {charactersReady ? <TfiCharacter pose={pose} cutting={!!cutting} /> : <Blink />}
+          {films.length > 0 && (
+            <div className="tfi-cue" {...cueFor(suggest, 'tv')}>
+              <TvSet films={films} live={tvLive} />
+            </div>
+          )}
           {track && <PlayerOverlay feed={music as TrackFeed} />}
-          <Blink />
 
           {objects
             // once the TV is live it has its own controls, so it stops being one big link
@@ -206,6 +236,7 @@ export function TfiRoom() {
               href={o.href}
               onClick={o.action === 'calendar' ? () => setCalOpen(true) : undefined}
               className={`tfi-spot--${o.key}`}
+              cue={cueFor(suggest, o.pose)}
             />
           ))}
           <Spot
@@ -215,12 +246,13 @@ export function TfiRoom() {
             tip={playerTip(music)}
             href={track?.url || spotify.profileUrl}
             className="tfi-spot--player"
+            cue={cueFor(suggest, 'rug')}
           />
 
           {stickers.map((s) => {
             const href = s.key === 'music' ? track?.url || spotify.profileUrl : s.href;
             const ext = isExternal(href);
-            const props = { className: `tfi-sticker tfi-sticker--${s.key}`, style: boxStyle(s.box), 'aria-label': `${s.label} — ${s.sub}` };
+            const props = { className: `tfi-sticker tfi-sticker--${s.key}`, style: boxStyle(s.box), 'aria-label': `${s.label} — ${s.sub}`, ...cueFor(suggest, s.pose) };
             const art = <Image src={STICKER_ART[s.key]} alt="" fill sizes="240px" />;
             return ext ? (
               <a key={s.key} {...props} href={href} target="_blank" rel="noopener noreferrer">
@@ -232,8 +264,10 @@ export function TfiRoom() {
               </Link>
             );
           })}
+          {charactersReady && <CutFrame kind={cutting} />}
         </div>
       </div>
+      {charactersReady && <SceneSelector pose={pose} onPick={(p) => cutTo(p)} />}
       {scale > 0 && <CalendarPanel open={calOpen} onClose={() => setCalOpen(false)} />}
     </>
   );

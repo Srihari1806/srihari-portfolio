@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import '@fontsource-variable/newsreader/opsz.css';
 import '@fontsource-variable/dm-sans/index.css';
+import '@fontsource/dm-serif-display/latin-400.css';
+import '@fontsource/dm-serif-display/latin-400-italic.css';
 import '@fontsource/shadows-into-light-two/400.css';
 import './globals.css';
 import { ModeProvider } from '@/context/ModeContext';
@@ -40,14 +42,11 @@ export default function RootLayout({
         {/* apply the saved day/night mode before first paint, so night visitors never see a flash of day */}
         <script
           dangerouslySetInnerHTML={{
-            __html: "try{if(localStorage.getItem('srihari_portfolio_mode')==='tfi'){document.documentElement.classList.add('tfi-theme','dark')}}catch(e){}",
+            __html:
+              "try{if(localStorage.getItem('srihari_portfolio_mode')==='tfi'){document.documentElement.classList.add('tfi-theme','dark')}}catch(e){}" +
+              // already took the train-ride intro this visit: keep it from flashing up before the page loads
+              "try{if(sessionStorage.getItem('srihari_ride_done')&&!/[?&]ride/.test(location.search)){document.documentElement.classList.add('ride-done')}}catch(e){}",
           }}
-        />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=DM+Serif+Display:ital@0;1&amp;display=swap"
-          rel="stylesheet"
         />
       </head>
       <body className="min-h-screen flex flex-col font-sans antialiased selection:bg-lime-300 selection:text-neutral-900 dark:selection:bg-lime-400 dark:selection:text-neutral-950">

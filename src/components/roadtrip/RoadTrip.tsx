@@ -8,8 +8,9 @@ import '@fontsource/mukta/700.css';
 import './roadtrip.css';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState, type RefObject } from 'react';
-import { ArrowDown, ArrowRight, FileText, Radio, X } from 'lucide-react';
+import { ArrowDown, ArrowRight, FileText, Menu, Radio, X } from 'lucide-react';
 import { contact, intro, radio } from '@/data/roadtrip';
 import { BikeAndCar } from './BikeAndCar';
 import { RoadsideBillboard } from './Billboard';
@@ -86,11 +87,28 @@ function RadioButton() {
 }
 
 /* ---------------- header: the way out is always visible ---------------- */
+const PRIMARY_NAV = [
+  { label: 'Work', href: '/work' },
+  { label: 'Cinema', href: '/cinema' },
+  { label: 'Lab', href: '/lab' },
+  { label: 'Human', href: '/human' },
+] as const;
+
 function Header({ km }: { km: number }) {
   const { setContactOpen } = useTrip();
+  const pathname = usePathname();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setMobileMenuOpen(false);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [mobileMenuOpen]);
+
   return (
     <header className="rt-header">
-      <Link href="/" className="rt-brand" aria-label="srihari — back to home">
+      <Link href="/" className="rt-brand" aria-label="srihari — back to home" onClick={() => setMobileMenuOpen(false)}>
         <Milestone km={km} size="mini" />
         <span>
           <strong>
@@ -99,22 +117,122 @@ function Header({ km }: { km: number }) {
           <small aria-live="polite">{km === 0 ? 'You’ve arrived' : `${kmLabel(km)} km to hired`}</small>
         </span>
       </Link>
-      <nav className="rt-header-nav" aria-label="Shortcuts">
-        <a href="#builds" className="rt-navlink">
-          <span className="rt-hide-sm">View </span>projects
+
+      {/* Primary site navigation */}
+      <nav className="rt-header-nav rt-primary-nav rt-hide-sm" aria-label="Site navigation">
+        {PRIMARY_NAV.map((item) => {
+          const isActive = pathname === item.href;
+          return (
+            <Link
+              key={item.label}
+              href={item.href}
+              className={`rt-navlink ${isActive ? 'is-active' : ''}`}
+              aria-current={isActive ? 'page' : undefined}
+            >
+              <span className="rt-navlink-prefix" aria-hidden="true">/ </span>
+              {item.label}
+            </Link>
+          );
+        })}
+      </nav>
+
+      {/* Secondary actions */}
+      <nav className="rt-header-nav rt-secondary-nav" aria-label="Work shortcuts">
+        <a href="#builds" className="rt-navlink rt-action-projects rt-hide-sm">
+          Projects
         </a>
-        <a href="#arrival" className="rt-skipride">
+        <a href="#arrival" className="rt-skipride rt-hide-xs">
           Skip ride
         </a>
-        <a href={contact.resume} target="_blank" rel="noopener noreferrer" className="rt-navlink" aria-label="Résumé (opens in a new tab)">
-          <FileText aria-hidden="true" className="rt-show-sm" />
-          <span className="rt-hide-sm">Résumé</span>
+        <a href={contact.resume} target="_blank" rel="noopener noreferrer" className="rt-navlink rt-hide-sm" aria-label="Résumé (opens in a new tab)">
+          <FileText aria-hidden="true" />
+          <span>Résumé</span>
         </a>
         <RadioButton />
         <button type="button" className="rt-btn rt-btn--lime rt-btn--sm rt-hide-xs" onClick={() => setContactOpen(true)}>
           Say hi
         </button>
+
+        {/* Compact mobile menu toggle */}
+        <button
+          type="button"
+          className="rt-menu-toggle rt-show-sm"
+          aria-expanded={mobileMenuOpen}
+          aria-controls="rt-mobile-menu"
+          aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+          onClick={() => setMobileMenuOpen((o) => !o)}
+        >
+          {mobileMenuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
+        </button>
       </nav>
+
+      {/* Mobile drawer menu */}
+      {mobileMenuOpen && (
+        <div id="rt-mobile-menu" className="rt-mobile-nav" role="dialog" aria-modal="true" aria-label="Site and work navigation">
+          <div className="rt-mobile-nav-inner">
+            <div className="rt-mobile-nav-section">
+              <span className="rt-mobile-nav-heading">Navigation</span>
+              <ul className="rt-mobile-nav-list">
+                {PRIMARY_NAV.map((item) => {
+                  const isActive = pathname === item.href;
+                  return (
+                    <li key={item.label}>
+                      <Link
+                        href={item.href}
+                        className={`rt-mobile-nav-link ${isActive ? 'is-active' : ''}`}
+                        aria-current={isActive ? 'page' : undefined}
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <span aria-hidden="true">/ </span>{item.label}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+
+            <div className="rt-mobile-nav-section">
+              <span className="rt-mobile-nav-heading">Work shortcuts</span>
+              <ul className="rt-mobile-nav-list">
+                <li>
+                  <a href="#builds" className="rt-mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                    Jump to Projects (3 KM)
+                  </a>
+                </li>
+                <li>
+                  <a href="#arrival" className="rt-mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                    Skip ride (Destination)
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href={contact.resume}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rt-mobile-nav-link"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <FileText aria-hidden="true" /> Résumé (PDF)
+                  </a>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    className="rt-btn rt-btn--lime rt-btn--sm"
+                    style={{ width: '100%', marginTop: '6px' }}
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      setContactOpen(true);
+                    }}
+                  >
+                    Say hi / Contact
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }
@@ -290,13 +408,15 @@ function Trip() {
       if (glowRef.current) glowRef.current.style.opacity = String(1 - seg(line, pl, cr + 200));
     };
 
-    const place = (el: HTMLDivElement | null, x: number, y: number, a: number, o: number, side: string) => {
+    const place = (el: HTMLDivElement | null, x: number, y: number, a: number, o: number, side: string, bounce = 0) => {
       if (!el) return;
       el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
       el.style.opacity = String(o);
       el.dataset.side = side;
       const body = el.firstElementChild as HTMLElement | null;
-      if (body) body.style.transform = `rotate(${a}deg)`;
+      if (body) {
+        body.style.transform = bounce !== 0 ? `rotate(${a}deg) scale(${1 + bounce * 0.14}) translate3d(0, ${-bounce * 9}px, 0)` : `rotate(${a}deg)`;
+      }
     };
 
     const updateVehicles = (y: number, vh: number) => {
@@ -316,6 +436,19 @@ function Trip() {
       const laneT = merge ? ease(seg(jyc, merge.joinY - 120, merge.joinY + 40)) : 0;
       rootRef.current?.classList.toggle('is-merged', jy >= 0 && laneT > 0.5);
 
+      // calculate suspension bounce when near any speed breaker (within +/- 32px)
+      let bikeBounce = 0;
+      if (!reduce && m.speedBreakers && m.speedBreakers.length > 0) {
+        for (const sb of m.speedBreakers) {
+          const dist = Math.abs(jyc - sb.y);
+          if (dist < 34) {
+            // bell curve bounce: 0 -> 1 -> 0
+            const factor = Math.cos((dist / 34) * (Math.PI / 2));
+            bikeBounce = Math.max(bikeBounce, factor);
+          }
+        }
+      }
+
       // minimap follows the bike along the real road
       const my = Math.max(0, jyc);
       const mp = m.sample(my);
@@ -328,7 +461,7 @@ function Trip() {
       } else {
         const pt = m.sample(jyc);
         const bx = pt.x - outer * m.lane * laneT;
-        place(bikeRef.current, jLeft + bx, jTop + pt.y, pt.a, 1, sideOf(pt.x));
+        place(bikeRef.current, jLeft + bx, jTop + pt.y, pt.a, 1, sideOf(pt.x), bikeBounce);
       }
 
       // Car: waits on the connecting road, then pulls in beside the bike (never ahead of it)
@@ -349,7 +482,27 @@ function Trip() {
       raf = 0;
       const target = window.scrollY;
       const diff = target - sy;
-      sy = reduce || Math.abs(diff) < 0.4 ? target : sy + diff * 0.12;
+      
+      // Check if approaching any speed-breaker in the journey to naturally ease movement
+      let easeFactor = 0.12;
+      const trip = tripRef.current;
+      const j = journeyRef.current;
+      const m = model.current;
+      if (!reduce && trip && j && m && m.speedBreakers) {
+        const vh = window.innerHeight;
+        const lineY = target + vh * 0.62 - trip.offsetTop;
+        const jy = lineY - j.offsetTop;
+        for (const sb of m.speedBreakers) {
+          const dist = Math.abs(jy - sb.y);
+          if (dist < 180) {
+            // Smoothly reduce response factor to give a feeling of slowing down over the hump
+            const slow = 1 - (1 - dist / 180) * 0.55;
+            easeFactor = Math.min(easeFactor, 0.12 * slow);
+          }
+        }
+      }
+
+      sy = reduce || Math.abs(diff) < 0.4 ? target : sy + diff * easeFactor;
       const vh = window.innerHeight;
       const vw = window.innerWidth;
       updateHero(sy, vh, vw);

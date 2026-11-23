@@ -113,15 +113,15 @@ export function NowPlayingCard() {
 
 export function FilmDiaryCard() {
   return (
-    <article id="cinema" className="hm-card hm-card--film" aria-labelledby="hm-film-title">
+    <article id="cinema-card" className="hm-card hm-card--film" aria-labelledby="hm-film-title">
       <CardHead
         dot="orange"
         title="Film diary"
         id="hm-film-title"
         action={
-          <a href={filmDiary.href} target="_blank" rel="noopener noreferrer" className="hm-card-link" aria-label="Open my film diary on Letterboxd">
+          <Link href="/cinema" className="hm-card-link" aria-label="Open my cinema page">
             <ArrowRight strokeWidth={1.7} />
-          </a>
+          </Link>
         }
       />
       <p className="hm-card-sub">
@@ -141,15 +141,15 @@ export function FilmDiaryCard() {
 
 export function ElectronicsLabCard() {
   return (
-    <article id="lab" className="hm-card hm-card--lab" aria-labelledby="hm-lab-title">
+    <article id="lab-card" className="hm-card hm-card--lab" aria-labelledby="hm-lab-title">
       <CardHead
         dot="blue"
         title="Electronics lab"
         id="hm-lab-title"
         action={
-          <a href="#lab" className="hm-card-link" aria-label="See my lab projects">
+          <Link href="/lab" className="hm-card-link" aria-label="See my lab projects">
             <ArrowUpRight strokeWidth={1.7} />
-          </a>
+          </Link>
         }
       />
       <p className="hm-card-desc">Circuits, embedded systems and random hardware experiments.</p>

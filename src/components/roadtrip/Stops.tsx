@@ -26,25 +26,6 @@ export function StopHead({ id, km, kicker, title }: { id: string; km: number; ki
 }
 
 /* ---------------- 3 KM · three billboards along the bends ---------------- */
-function AskChip({ name, chat }: { name: string; chat: 'cricfield' | 'hiremap' | 'cinephile' }) {
-  const { playChat, discover } = useTrip();
-  return (
-    <button
-      type="button"
-      className="rt-ask"
-      onClick={() => {
-        playChat(chat);
-        discover('products');
-      }}
-    >
-      <span className="rt-av rt-av--car" aria-hidden="true">
-        <CarFront />
-      </span>
-      The car has a question about {name}
-    </button>
-  );
-}
-
 export function BuildsStop() {
   return (
     <>
@@ -65,12 +46,18 @@ export function BuildsStop() {
               {i === 0 && <StopHead id={id} km={builds.km} kicker={builds.kicker} title={builds.title} />}
               <div className="rt-bb-row">
                 <ProjectBillboard project={p} index={i} />
-                <ConversationalUI
-                  id={p.key}
-                  label={`The car asks about ${p.name}`}
-                  className="rt-bb-convo"
-                  idle={<AskChip name={p.name} chat={p.key} />}
-                />
+                <div className="rt-bb-convo-wrap">
+                  <ConversationalUI
+                    id={p.key}
+                    auto
+                    label={`Srihari and the bike discuss ${p.name}`}
+                    className="rt-bb-convo"
+                  />
+                  <div className="rt-bb-takeaway">
+                    <span className="rt-bb-takeaway-label">Recruiter Takeaway</span>
+                    <p className="rt-bb-takeaway-text">{p.takeaway}</p>
+                  </div>
+                </div>
               </div>
               {i === builds.projects.length - 1 && <ConversationalUI id="builds" auto label="The bike sums up" className="rt-convo--after" />}
             </div>

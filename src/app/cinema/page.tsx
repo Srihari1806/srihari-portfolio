@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
-import { CinemaHall } from '@/components/cinema/CinemaHall';
+import { CinemaGame } from '@/components/cinema/game/CinemaGame';
+import { letterboxd } from '@/data/tfi';
 
 export const metadata: Metadata = {
-  title: 'Cinema — Srihari Talkies',
-  description: 'Walk through a single-screen theatre: a release calendar, my recent Letterboxd watches, writing about films, and my original music.',
+  title: 'Cinema | Srihari',
+  description: 'Walk through a Hyderabad-inspired single-screen cinema and explore Srihari’s film diary, writing, original music and creative work.',
 };
 
 export default function Cinema() {
-  return <CinemaHall />;
+  return <CinemaGame user={process.env.LETTERBOXD_USERNAME || letterboxd.username} />;
 }

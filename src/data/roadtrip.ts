@@ -59,56 +59,66 @@ export const chats = {
   },
   cricfield: {
     lines: [
-      { who: 'car', text: 'Who is it for?' },
-      { who: 'me', text: 'Fans and analysts who want the why behind a result, not just the score.' },
+      { who: 'me', text: 'Slow down here — CricField took a lot of late-night IPL debugging.' },
+      { who: 'bike', text: 'Cricket has enough static scoreboards. We built a Pressure Lab.' },
+      { who: 'me', text: 'Exactly. It ranks players in custom match crises, not just flat averages.' },
+      { who: 'bike', text: 'Data pipeline tuned. Fans get answers, not just box scores.' },
     ],
   },
   hiremap: {
     lines: [
-      { who: 'car', text: 'What was your part in it?' },
-      { who: 'me', text: 'It’s a team build. I built the front end in React and TypeScript.' },
+      { who: 'me', text: 'Speed-breaker ahead! Easy on the suspension — HireMap stop.' },
+      { who: 'bike', text: 'Job seekers opening 14 browser tabs just to apply for one role?' },
+      { who: 'me', text: 'Painful reality. In this team build, I engineered the React and TypeScript front end.' },
+      { who: 'bike', text: 'Connected the ATS checker, resume builder, and job matching into one cohesive flow.' },
     ],
   },
   cinephile: {
     lines: [
-      { who: 'car', text: 'Why films?' },
-      { who: 'me', text: 'A film can win in cinemas and flop on streaming. I wanted to know why.' },
+      { who: 'me', text: 'Another hump! Welcome to Cinephile — where passion meets the box office.' },
+      { who: 'bike', text: 'Watching films is fun. Modeling theatrical window economics is obsessive.' },
+      { who: 'me', text: 'I love cinema, but I wanted to explore why films win in theatres yet struggle on OTT.' },
+      { who: 'bike', text: 'Tested release campaigns and projection windows — purely illustrative scenarios, no fake profits!' },
     ],
   },
   builds: {
     lines: [
-      { who: 'bike', text: 'Three projects deployed. Curiosity remains unresolved.', plain: 'He’s still not done.' },
-      { who: 'me', text: 'He makes it sound much easier than it was.' },
+      { who: 'bike', text: 'Three speed-breakers cleared. Three real products running live.', plain: 'All three shipped.' },
+      { who: 'me', text: 'Solid engineering foundation. But wait… who is that waiting up ahead?' },
     ],
   },
   merge: {
     lines: [
-      { who: 'bike', text: 'Build complete. Ready to ship.' },
-      { who: 'car', text: 'Cool. Who needs it?' },
-      { who: 'bike', text: 'Recalculating requirements…', plain: 'He has no idea.' },
-      { who: 'me', text: 'And that’s when building turned into product thinking.' },
+      { who: 'bike', text: 'Clear straight ahead! We can accelerate and ship five more features.' },
+      { who: 'car', text: 'Hold on. Before you step on the gas, who actually needs those features?' },
+      { who: 'bike', text: 'Requirements check in progress… Wait, who invited the product manager?' },
+      { who: 'me', text: 'And right at 2 KM, product judgment joins engineering velocity.' },
     ],
     replies: [
-      { label: 'Ship it fast', next: 'speed' },
-      { label: 'Ask users first', next: 'judgment' },
+      { label: 'Ship fast and break things', next: 'speed' },
+      { label: 'Validate user pain first', next: 'judgment' },
     ],
   },
   speed: {
     lines: [
-      { who: 'bike', text: 'Shipped in four minutes. Active users: zero.', plain: 'Fast. Also useless.' },
-      { who: 'car', text: 'Fast to nowhere is still nowhere.' },
+      { who: 'bike', text: 'Deployed to production in record time! Active daily users: zero.', plain: 'Fast. Also useless.' },
+      { who: 'car', text: 'Shipping at 100 km/h in the wrong direction is still going nowhere.' },
     ],
-    replies: [{ label: 'So… both?', next: 'both' }],
+    replies: [{ label: 'So… balance both?', next: 'both' }],
   },
   judgment: {
     lines: [
-      { who: 'car', text: 'Interviewed users for four months. Very insightful.' },
-      { who: 'bike', text: 'Commits in that period: 0.', plain: 'Nothing got built.' },
+      { who: 'car', text: 'Conducted 40 user interviews over four months. Thorough discovery.' },
+      { who: 'bike', text: 'Total working prototypes shipped during that time: 0.', plain: 'Nothing got built.' },
     ],
-    replies: [{ label: 'So… both?', next: 'both' }],
+    replies: [{ label: 'So… balance both?', next: 'both' }],
   },
   both: {
-    lines: [{ who: 'me', text: 'Prototype fast, test with real people, then commit. That’s the lane I drive in.' }],
+    lines: [
+      { who: 'car', text: 'Validate genuine user friction, define the core metrics, and test hypotheses.' },
+      { who: 'bike', text: 'Then architect cleanly, code with high standards, and ship iteratively.' },
+      { who: 'me', text: 'Fast prototypes backed by clear product intent. That’s the lane I drive in.' },
+    ],
   },
   cinema: {
     lines: [{ who: 'me', text: 'You’ve seen what I build. But did I mention I write songs?' }],
@@ -154,6 +164,7 @@ export type Project = {
   problem: string;
   features: string[];
   role: string;
+  takeaway: string;
   note?: string;
 };
 
@@ -183,6 +194,7 @@ export const builds = {
         'Venue Atlas: grounds, conditions and history',
       ],
       role: 'Founder build: data, design, code and launch.',
+      takeaway: 'Demonstrates end-to-end data product ownership: custom situational metrics, responsive UI design, and full deployment from scratch.',
     },
     {
       key: 'hiremap',
@@ -205,6 +217,7 @@ export const builds = {
         'Portals for companies and colleges',
       ],
       role: 'Team build. I worked on the front end: React, TypeScript and Firebase.',
+      takeaway: 'Shows strong frontend collaboration: translating multi-step user workflows into modular TypeScript components and seamless UX.',
     },
     {
       key: 'cinephile',
@@ -227,7 +240,8 @@ export const builds = {
         'Cinema Journal: essays and box-office post-mortems',
       ],
       role: 'Concept, research and build.',
-      note: 'Box-office and OTT figures on the site are illustrative, as the site itself says.',
+      note: 'Box-office and OTT figures on the site are illustrative scenarios, not audited financial records.',
+      takeaway: 'Highlights commercial product thinking and domain curiosity: modeling release dynamics and scenario exploration with immersive storytelling.',
     },
   ] as Project[],
 };

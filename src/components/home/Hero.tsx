@@ -35,7 +35,7 @@ export function Hero() {
             </svg>
             Explore my work
           </a>
-          <a href="#human" className="hm-btn hm-btn--outline">
+          <a href="/human" className="hm-btn hm-btn--outline">
             Meet the human
             <ArrowUpRight aria-hidden="true" strokeWidth={1.8} />
           </a>

@@ -77,6 +77,8 @@ export function ProjectPreview({ project, onClose }: { project: Project; onClose
               <p>{project.problem}</p>
               <h3>My part</h3>
               <p>{project.role}</p>
+              <h3>Recruiter Takeaway</h3>
+              <p className="rt-preview-takeaway">{project.takeaway}</p>
             </section>
             <section>
               <h3>On the live site</h3>
