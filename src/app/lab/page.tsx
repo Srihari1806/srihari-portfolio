@@ -1,19 +1,13 @@
 import type { Metadata } from 'next';
-import art from '@/assets/tfi/sticker-play.webp';
-import { RoomNote } from '@/components/tfi/RoomNote';
+import { LabExperience } from '@/components/lab/LabExperience';
 
 export const metadata: Metadata = {
-  title: 'Lab — srihari.',
-  description: 'Circuits, embedded systems and hardware prototypes. The lab workbench is being set up.',
+  title: 'Curiosity Lab — Beesetti Srihari | Built it. Broke it. Understood it.',
+  description:
+    'An interactive engineering room: a working retro terminal, an oscilloscope with real signal processing, an architecture wall and breadboard demos — with an experiment directory for quick reading.',
+  alternates: { canonical: '/lab' },
 };
 
-export default function LabPage() {
-  return (
-    <RoomNote
-      art={art}
-      title="The lab workbench is being set up."
-      body="Circuits, embedded systems, sensors and hardware prototypes are currently on the test bench. Until the schematics are published, explore the software builds parked on the road."
-      next={{ label: 'See the projects', href: '/work' }}
-    />
-  );
+export default function Page() {
+  return <LabExperience />;
 }

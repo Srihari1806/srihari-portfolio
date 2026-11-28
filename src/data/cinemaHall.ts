@@ -66,7 +66,7 @@ export const booth = {
     { title: 'Alaka Yelanani', note: 'Original song', url: '' },
     { title: 'Dil Bezubaan', note: 'Original song', url: '' },
   ] as BoothItem[],
-  lyrics: [] as BoothItem[],
+  lyrics: [{ title: 'Sahitya Rachanalu', note: 'Letters, lyrics and late-night ink — my writing house', url: 'https://sahitya-rachanalu.vercel.app/' }] as BoothItem[],
   shortFilms: [] as BoothItem[],
   storyboards: [] as BoothItem[],
 };

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { ArrowUpRight, Play } from 'lucide-react';
 import type { FilmEntry } from '@/lib/live';
 import { calendarEvents } from '@/data/tfi';
-import { cinemaWriting, favoriteSoundtracks, notebook, records, type MusicLink, type Shelf } from '@/data/theatre';
+import { cinemaWriting, favoriteSoundtracks, notebook, records, sahitya, type MusicLink, type Shelf } from '@/data/theatre';
 import type { TheatreContent } from './useTheatreContent';
 import type { Exhibit } from './plan';
 
@@ -60,13 +60,13 @@ export function ExhibitBody({id,content:c,open}:{id:Exhibit;content:TheatreConte
     case 'snacks':return <><p>Popcorn at the window, a steel tumbler at the thickshake mixer and a record waiting beside the soda fountain.</p><button className="cg-text-button" onClick={()=>open('music')}>Browse the record cabinet</button></>;
     case 'music':{
       const t=c.music?.track,playing=t?.playing && c.music?.source==='live' && Date.now()-Date.parse(c.music?.fetchedAt??'')<90000;
-      return <><h3>Released singles</h3><Records list={records}/><h3>Spotify</h3>
+      return <><h3>Released singles</h3><Records list={records}/><h3>Lyrics &amp; writing</h3><Records list={[sahitya]}/><h3>Spotify</h3>
       {t?<><p className="cg-source-note">{playing?'Playing now':c.music?.source==='cached'?'Saved listening activity':'Last reported track'}</p><Records list={[{title:t.title,note:t.artist,url:t.url,image:t.art}]}/></>:<p>{c.music?'Listening activity is unavailable.':'Checking listening activity…'}</p>}
       <h3>Public playlists</h3>{c.playlists?.items?.length?<Records list={c.playlists.items}/>:<p>{!c.playlists?'Checking public playlists…':c.playlists.source==='live'?'No public playlists were returned for this account.':'Spotify playlists are unavailable.'}</p>}
       {favoriteSoundtracks.length>0&&<><h3>Favorite soundtracks</h3><Records list={favoriteSoundtracks}/></>}</>;
     }
     case 'notebook':case 'memories':return <>{id==='memories'&&<p>The projectionist’s shelf keeps the music and writing that went into this corner of the portfolio.</p>}
-      <h3>Lyrics</h3><Records list={[notebook.lyricCredit]}/><h3>Film concepts</h3>{notebook.concepts.map(c=><article key={c.title}><strong>{c.title}</strong><p>{c.note}</p></article>)}
+      <h3>Lyrics</h3><Records list={[notebook.lyricCredit, sahitya]}/><h3>Film concepts</h3>{notebook.concepts.map(c=><article key={c.title}><strong>{c.title}</strong><p>{c.note}</p></article>)}
       {notebook.publications.length>0&&<><h3>Pages from the notebook</h3>{notebook.publications.map(w=><Source href={w.url} key={w.url}>{w.title}</Source>)}</>}
       <h3>Creative projects</h3>{notebook.projects.map(p=><article key={p.key}><strong>{p.title}</strong><p>{p.line}</p>{p.href&&<Source href={p.href}>View project</Source>}</article>)}
       <Link href="/creative" className="cg-source">Open creative work</Link></>;

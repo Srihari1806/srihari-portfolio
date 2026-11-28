@@ -88,10 +88,11 @@ function RadioButton() {
 
 /* ---------------- header: the way out is always visible ---------------- */
 const PRIMARY_NAV = [
+  { label: 'Home', href: '/' },
   { label: 'Work', href: '/work' },
-  { label: 'Cinema', href: '/cinema' },
   { label: 'Lab', href: '/lab' },
-  { label: 'Human', href: '/human' },
+  { label: 'Cinema', href: '/cinema' },
+  { label: 'About', href: '/about' },
 ] as const;
 
 function Header({ km }: { km: number }) {

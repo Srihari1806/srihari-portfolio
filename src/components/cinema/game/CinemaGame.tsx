@@ -76,7 +76,7 @@ export function CinemaGame({user}:{user:string}){
   return <section className="cg" aria-labelledby="cinema-heading">
     <h1 className="sr-only" id="cinema-heading">Srihari’s walkable cinema</h1>
     <header className="cg-header"><Link href="/" className="cg-brand" aria-label="Srihari, home"><Film aria-hidden="true" size={18}/>srihari<span>.</span></Link>
-      <nav aria-label="Primary navigation">{[['Work','/work'],['Cinema','/cinema'],['Lab','/playground'],['Human','/#human']].map(([name,url])=><Link key={url} href={url} aria-current={name==='Cinema'?'page':undefined}>{name}</Link>)}</nav>
+      <nav aria-label="Primary navigation">{[['Home','/'],['Work','/work'],['Lab','/lab'],['Cinema','/cinema'],['About','/about']].map(([name,url])=><Link key={url} href={url} aria-current={name==='Cinema'?'page':undefined}>{name}</Link>)}</nav>
     </header>
     <div className="cg-stage">
       <canvas ref={canvas} aria-label="Walkable 3D theatre. Scroll for a guided visit, or use WASD to walk." tabIndex={0}

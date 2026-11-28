@@ -10,26 +10,31 @@ import { RoleProvider } from '@/context/RoleContext';
 import { PortalLayer } from '@/components/ride/PortalLayer';
 
 export const metadata: Metadata = {
-  title: 'Srihari | Interactive Portfolio & Multi-Disciplinary Builder',
+  metadataBase: new URL('https://srihari-portfolio-three.vercel.app'),
+  title: 'Beesetti Srihari — Data-driven Product Builder | Portfolio',
   description:
-    'Production-ready personal portfolio for Srihari, an Electronics & Computer Science engineer combining development, product thinking, analytics, design, marketing, music, writing, cricket and cinema.',
+    'Electronics & Computer Science undergraduate (class of 2027) building products with engineering, data and storytelling. Projects: CricField, HireMap, Cinephile. Open to internships and graduate roles in data, software, applied AI and product.',
   keywords: [
-    'Srihari',
-    'Product Management',
+    'Beesetti Srihari',
+    'Data Analyst',
+    'Product Analyst',
     'Software Engineer',
-    'Data Analytics',
+    'Applied AI',
+    'Associate Product Manager',
     'CricField',
-    'Telugu Cinema',
-    'Next.js Portfolio',
+    'Cricket analytics',
+    'KIIT',
     'Electronics and Computer Science',
   ],
-  authors: [{ name: 'Srihari' }],
+  authors: [{ name: 'Beesetti Srihari' }],
   openGraph: {
-    title: 'Srihari | Somewhere between logic & imagination',
+    title: 'Beesetti Srihari | Somewhere between logic & imagination',
     description:
-      'Role-based portfolio spanning Product Management, Software Engineering, Data Analytics, UI/UX, and Telugu Cinema Desk mode.',
+      'Data-driven product builder. Engineering, analytics, product thinking and storytelling — with a train ride through cricket, cinema and music.',
     type: 'website',
+    url: '/',
   },
+  twitter: { card: 'summary_large_image', title: 'Beesetti Srihari — Data-driven Product Builder' },
 };
 
 export default function RootLayout({

@@ -1,0 +1,22 @@
+/* About (Phase 1): terracotta and faded cream, ready for the Vizag house to wrap around it. */
+.ab { --terracotta: #b65a3c; }
+.ab-hero { padding: 40px 20px 24px; max-width: 980px; }
+.ab-title { margin-top: 18px; font-family: var(--serif); font-weight: 700; font-variation-settings: 'opsz' 72; font-size: clamp(44px, 10vw, 88px); line-height: .95; letter-spacing: -.04em; }
+.ab-lede { margin-top: 16px; max-width: 40ch; font-family: var(--serif); font-size: 21px; line-height: 1.35; color: var(--ink-2); }
+.ab-pillars { margin-top: 22px; display: grid; gap: 6px; font-size: 16px; }
+.ab-pillars strong { font-family: var(--serif); color: var(--terracotta); }
+.ab-jump { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+.ab-jump a { padding: 8px 14px; border: 1.2px solid var(--ink); border-radius: 999px; font-size: 14px; font-weight: 500; }
+.ab-jump a:hover { background: var(--olive-soft); }
+.ab-two { display: grid; gap: 14px; max-width: 900px; font-family: var(--serif); font-size: 19px; line-height: 1.5; color: var(--ink-2); }
+.ab-think { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); counter-reset: t; }
+.ab-think li { padding: 18px; border: 1.2px solid var(--ink); border-radius: 10px; background: var(--paper); font-size: 15px; line-height: 1.5; }
+.ab-think span { display: block; margin-bottom: 6px; font-family: var(--serif); font-weight: 700; font-size: 20px; color: var(--terracotta); }
+.ab-note { margin-top: 16px; font-family: var(--hand); font-size: 19px; color: #6a5a48; }
+.ab-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.ab-links a { display: inline-flex; align-items: center; gap: 6px; height: 44px; padding: 0 18px; border: 1.2px solid var(--ink); border-radius: 8px; font-weight: 600; background: var(--paper); }
+.ab-links a:hover { background: var(--olive-soft); }
+.ab-links svg { width: 16px; height: 16px; }
+@media (min-width: 768px) { .ab-hero { padding: 64px 28px 32px; } .ab-two { grid-template-columns: 1fr 1fr; gap: 32px; } }
+@media (min-width: 1200px) { .ab-hero { padding-left: 44px; } }
+.ab-beliefs { margin-top: 18px; display: grid; gap: 8px; font-family: var(--hand); font-size: 20px; }

@@ -10,7 +10,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import gsap from 'gsap';
 import { CABIN, stops } from '@/data/ride';
-import { hasBooted, peekReturning, readJourney, saveJourney, takeReturning } from './journey';
+import { REBOARD_EVENT, hasBooted, peekReturning, readJourney, saveJourney, takeReturning } from './journey';
 import { LoadingScreen, type LoadingHandle } from './LoadingScreen';
 import { RideCabin } from './RideCabin';
 import '@fontsource/vt323/400.css';
@@ -32,6 +32,17 @@ function decideStart(): Start {
 }
 const MIN_LOAD_MS = 3400;
 
+
+/** shared links meant for recruiters (?for=data, ?ride=skip) open straight on the portfolio */
+function wantsSkip() {
+  try {
+    const q = new URLSearchParams(window.location.search);
+    return q.has('for') || q.get('ride') === 'skip';
+  } catch {
+    return false;
+  }
+}
+
 function preload(srcs: string[], onEach: (done: number) => void) {
   let done = 0;
   return Promise.all(
@@ -51,7 +62,8 @@ function preload(srcs: string[], onEach: (done: number) => void) {
 
 export function TrainRide() {
   const reduce = !!useReducedMotion();
-  const [begin] = useState(decideStart);
+  const [begin, setBegin] = useState(decideStart);
+  const [visit, setVisit] = useState(0);
   const [phase, setPhase] = useState<Phase>(begin.phase);
   const [progress, setProgress] = useState(0);
   const [cabinIn, setCabinIn] = useState(begin.phase === 'cabin');
@@ -73,6 +85,28 @@ export function TrainRide() {
       behind.forEach((el) => el.removeAttribute('inert'));
     };
   }, [phase]);
+
+  // deep links for recruiters skip the intro instantly (the head script already hid it before paint)
+  useEffect(() => {
+    if (begin.phase === 'idle' && wantsSkip()) {
+      saveJourney({ mode: 'off' });
+      setPhase('gone');
+    }
+    document.documentElement.classList.remove('ride-skip');
+  }, [begin.phase]);
+
+  // "Board the train" from the homepage: straight back into the cabin at the first stop
+  useEffect(() => {
+    const reboard = () => {
+      saveJourney({ mode: 'riding', progress: 0 });
+      setBegin({ phase: 'cabin', entry: 'resume', at: 0 });
+      setVisit((v) => v + 1);
+      setCabinIn(true);
+      setPhase('cabin');
+    };
+    window.addEventListener(REBOARD_EVENT, reboard);
+    return () => window.removeEventListener(REBOARD_EVENT, reboard);
+  }, []);
 
   const finish = useCallback(() => {
     saveJourney({ mode: 'off' });
@@ -149,7 +183,7 @@ export function TrainRide() {
 
   return (
     <div ref={rootRef} className={`ride ${phase === 'leaving' ? 'is-leaving' : ''}`} role="region" aria-label="Portfolio intro: a train ride">
-      {cabinIn && <RideCabin reduce={reduce} entry={begin.entry} startAt={begin.at} onExit={finish} />}
+      {cabinIn && <RideCabin key={visit} reduce={reduce} entry={begin.entry} startAt={begin.at} onExit={finish} />}
       {boardOn && (
         <div ref={boardRef} className="ride-board">
           <LoadingScreen ref={loadRef} phase={phase as 'idle' | 'loading' | 'diving'} progress={progress} onStart={start} onSkip={finish} />

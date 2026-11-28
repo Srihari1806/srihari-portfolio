@@ -10,21 +10,23 @@ import film2 from '@/assets/home/film-2.jpg';
 import film3 from '@/assets/home/film-3.jpg';
 import labImg from '@/assets/home/electronics-lab.jpg';
 import memePixel from '@/assets/home/meme-corner-pixel.webp';
-import { filmDiary, lab, memeCorner, nowPlaying } from '@/data/home';
+import { filmDiary, lab, memeCorner } from '@/data/home';
+import { useNowPlaying } from './useNowPlaying';
 import { Sparks, SpotifyMark } from './Doodles';
 
 const posters = [film1, film2, film3];
 
 function NowPlayingMini() {
-  const [playing, setPlaying] = useState(true);
+  const [demoPlaying, setPlaying] = useState(true);
   const [liked, setLiked] = useState(false);
-  const n = nowPlaying;
+  const n = useNowPlaying();
+  const playing = n.isDemo ? demoPlaying : n.playing;
   return (
     <article id="music-m" className="hm-mw-card hm-mw-music" aria-labelledby="hm-mw-np">
       <div className="hm-mw-head">
         <h3 id="hm-mw-np">
           <SpotifyMark className="hm-mw-spotify" />
-          Now playing
+          {n.label}
         </h3>
         <span className={`hm-eq hm-eq--mini${playing ? ' is-playing' : ''}`} aria-hidden="true">
           {Array.from({ length: 6 }, (_, i) => (
@@ -33,10 +35,15 @@ function NowPlayingMini() {
         </span>
       </div>
       <div className="hm-mw-np-body">
-        <Image src={album} alt="Album art for Evening Drive" className="hm-mw-cover" sizes="56px" />
+        {n.art ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={n.art} alt={`Album art: ${n.title}`} className="hm-mw-cover" width={56} height={56} />
+        ) : (
+          <Image src={album} alt="Album art for Evening Drive" className="hm-mw-cover" sizes="56px" />
+        )}
         <div className="hm-mw-np-info">
           <div className="hm-mw-np-title">
-            <p>{n.track}</p>
+            <p>{n.isDemo ? n.title : <a href={n.url} target="_blank" rel="noopener noreferrer">{n.title}</a>}</p>
             <button
               type="button"
               aria-label={liked ? 'Unlike (demo)' : 'Like (demo)'}
@@ -59,10 +66,15 @@ function NowPlayingMini() {
           </div>
           <p className="hm-mw-time">
             {n.isDemo && <span title="Demo state — Spotify isn't connected yet">demo</span>}
-            {n.elapsed} / {n.duration}
+            {n.elapsed && n.duration ? `${n.elapsed} / ${n.duration}` : 'via Spotify'}
           </p>
         </div>
       </div>
+      {!n.isDemo ? (
+        <a className="hm-np-open" href={n.url} target="_blank" rel="noopener noreferrer">
+          Open in Spotify <ArrowUpRight aria-hidden="true" strokeWidth={1.8} />
+        </a>
+      ) : (
       <div className="hm-mw-controls">
         <button type="button" aria-label="Shuffle (demo)"><Shuffle strokeWidth={1.8} /></button>
         <button type="button" aria-label="Previous track (demo)"><SkipBack strokeWidth={1.8} fill="currentColor" /></button>
@@ -78,6 +90,7 @@ function NowPlayingMini() {
         <button type="button" aria-label="Next track (demo)"><SkipForward strokeWidth={1.8} fill="currentColor" /></button>
         <button type="button" aria-label="Repeat (demo)"><Repeat strokeWidth={1.8} /></button>
       </div>
+      )}
     </article>
   );
 }
@@ -91,8 +104,9 @@ function CinemaDiaryMini() {
             <i /><i /><i />
           </span>
           Cinema diary
+          {filmDiary.isDemo && <span className="hm-np-demo" style={{ marginLeft: 6, fontSize: 10 }}>sample</span>}
         </h3>
-        <a href={filmDiary.href} target="_blank" rel="noopener noreferrer" className="hm-mw-link" aria-label="Open my film diary on Letterboxd">
+        <a href="/cinema" className="hm-mw-link" aria-label="Open my cinema page">
           <ArrowUpRight strokeWidth={1.8} />
         </a>
       </div>

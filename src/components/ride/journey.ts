@@ -77,3 +77,6 @@ export const PORTAL_EVENT = 'srihari:portal';
 export function emitPortal(e: PortalEvent) {
   window.dispatchEvent(new CustomEvent<PortalEvent>(PORTAL_EVENT, { detail: e }));
 }
+
+/** fired by "Board the train again" on the homepage: back into the cabin, no departure board */
+export const REBOARD_EVENT = 'srihari:reboard';

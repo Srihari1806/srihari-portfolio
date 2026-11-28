@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { ArrowUpRight, Moon, Sun, X } from 'lucide-react';
 import { contactHref, navLinks } from '@/data/home';
@@ -15,6 +16,8 @@ type SiteHeaderProps = {
 
 export function SiteHeader({ onToggleTheme, links = navLinks }: SiteHeaderProps) {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const isCurrent = (href: string) => (href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(`${href}/`));
   const { mode, toggleMode, isMounted } = useMode();
   const handleToggle = onToggleTheme || toggleMode;
   const isDark = mode === 'tfi';
@@ -38,7 +41,7 @@ export function SiteHeader({ onToggleTheme, links = navLinks }: SiteHeaderProps)
         aria-label="Main navigation"
       >
         {links.map((l) => (
-          <Link key={l.label} href={l.href} onClick={() => setOpen(false)}>
+          <Link key={l.label} href={l.href} onClick={() => setOpen(false)} aria-current={isCurrent(l.href) ? 'page' : undefined}>
             <span aria-hidden="true">/&nbsp;</span>
             {l.label}
           </Link>

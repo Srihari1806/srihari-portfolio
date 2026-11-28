@@ -1,48 +1,59 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { Role } from '@/types';
+/* Which role family a visitor is exploring the portfolio for (Data & Analytics, Software, …).
+   - Shareable: /?for=data restores the selection; changing it updates the URL in place.
+   - Remembered for the tab (sessionStorage), so /about and the homepage agree.
+   - null = no preference: everything shows in its default order. A role only re-orders and
+     highlights — it never hides anything. */
+
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { roleById, roleFamilies, type RoleFamily, type RoleId } from '@/data/roles';
 
 interface RoleContextType {
-  activeRole: Role;
-  setActiveRole: (role: Role) => void;
-  availableRoles: Role[];
+  activeRole: RoleId | null;
+  role: RoleFamily | null;
+  setActiveRole: (role: RoleId | null) => void;
+  availableRoles: RoleFamily[];
 }
 
-export const ROLES: Role[] = [
-  'Product Management',
-  'Software Development',
-  'Data Analytics',
-  'UI/UX Design',
-  'Marketing & Growth',
-  'Creative Strategy',
-];
+const KEY = 'srihari_portfolio_role';
+const PARAM = 'for';
 
 const RoleContext = createContext<RoleContextType | undefined>(undefined);
 
-export function RoleProvider({ children }: { children: React.ReactNode }) {
-  const [activeRole, setActiveRoleState] = useState<Role>('Product Management');
+function writeUrl(id: RoleId | null) {
+  try {
+    const url = new URL(window.location.href);
+    if (id) url.searchParams.set(PARAM, id);
+    else url.searchParams.delete(PARAM);
+    window.history.replaceState(window.history.state, '', url.toString());
+  } catch {}
+}
 
+export function RoleProvider({ children }: { children: React.ReactNode }) {
+  const [activeRole, setActiveRoleState] = useState<RoleId | null>(null);
+
+  // read after mount so the server render (no role) always matches the first client render
   useEffect(() => {
-    const saved = localStorage.getItem('srihari_portfolio_role') as Role;
-    if (saved && ROLES.includes(saved)) {
-      setActiveRoleState(saved);
-    }
+    let id: string | null = null;
+    try {
+      id = new URLSearchParams(window.location.search).get(PARAM) || sessionStorage.getItem(KEY);
+    } catch {}
+    const found = roleById(id);
+    if (found) setActiveRoleState(found.id);
   }, []);
 
-  const setActiveRole = (role: Role) => {
-    setActiveRoleState(role);
-    localStorage.setItem('srihari_portfolio_role', role);
-  };
+  const setActiveRole = useCallback((id: RoleId | null) => {
+    setActiveRoleState(id);
+    try {
+      if (id) sessionStorage.setItem(KEY, id);
+      else sessionStorage.removeItem(KEY);
+    } catch {}
+    writeUrl(id);
+  }, []);
 
   return (
-    <RoleContext.Provider
-      value={{
-        activeRole,
-        setActiveRole,
-        availableRoles: ROLES,
-      }}
-    >
+    <RoleContext.Provider value={{ activeRole, role: roleById(activeRole), setActiveRole, availableRoles: roleFamilies }}>
       {children}
     </RoleContext.Provider>
   );
@@ -50,8 +61,6 @@ export function RoleProvider({ children }: { children: React.ReactNode }) {
 
 export function useRole() {
   const context = useContext(RoleContext);
-  if (!context) {
-    throw new Error('useRole must be used within a RoleProvider');
-  }
+  if (!context) throw new Error('useRole must be used within a RoleProvider');
   return context;
 }

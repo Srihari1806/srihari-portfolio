@@ -70,13 +70,13 @@ export const stops: Stop[] = [
   },
   {
     key: 'human',
-    name: 'Human',
+    name: 'About',
     line: 'Behind the terminal',
     x: 6700,
-    href: '/human',
-    cta: 'Meet the Human',
+    href: '/about',
+    cta: 'Enter About',
     focus: [300, 190],
-    cover: 'radial-gradient(ellipse at 50% 40%, #59201a, #2a120f 75%)',
+    cover: 'linear-gradient(#f7f2ea, #efe3d2)',
   },
 ];
 export const stopByHref = (path: string) => stops.find((s) => s.href && (path === s.href || path.startsWith(`${s.href}/`)));

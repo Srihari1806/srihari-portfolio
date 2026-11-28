@@ -182,7 +182,7 @@ export const builds = {
       image: '/projects/cricfield.jpg',
       imageAlt: 'CricField Pressure Lab: a situation builder beside a ranked table of IPL batters',
       live: 'https://www.cricfield.in/',
-      caseStudy: '',
+      caseStudy: '/work/cricfield',
       code: 'https://github.com/CRICFIELD-INTELLIGENGE/IPL-ANALYTICAL-ENGINE',
       problem: 'Cricket coverage tells you what happened. I wanted somewhere to ask why, and what if.',
       features: [
@@ -205,7 +205,7 @@ export const builds = {
       image: '/projects/hiremap.jpg',
       imageAlt: 'HireMap toolbox: AI resume builder, cover letter, ATS checker, career map and job matching',
       live: 'https://hiremap-eight.vercel.app/',
-      caseStudy: '',
+      caseStudy: '/work/hiremap',
       code: '',
       problem: 'Students juggle half a dozen tools to apply for a single job.',
       features: [
@@ -228,7 +228,7 @@ export const builds = {
       image: '/projects/cinephile.jpg',
       imageAlt: 'CineVerse home: “Two screens. One story.” over a cinema hall',
       live: 'https://cinephile-theatre.vercel.app/',
-      caseStudy: '',
+      caseStudy: '/work/cinephile',
       code: '',
       problem: 'A film can win in cinemas and struggle on streaming. I wanted to see why.',
       features: [
@@ -269,7 +269,7 @@ export const creative = {
       tag: 'Independent music',
       line: 'Independent cultural ventures: event concepts, branding, artist collaborations and audience strategy.',
       uses: ['Branding', 'Audience strategy', 'Partnerships'],
-      href: '', // TODO link
+      href: 'https://band-premier-league.vercel.app/',
     },
     {
       key: 'sahitya',
@@ -277,7 +277,7 @@ export const creative = {
       tag: 'Writing community',
       line: 'Original lyrics, poetry, songwriting and creative publishing. I founded it.',
       uses: ['Writing', 'Community', 'Publishing'],
-      href: '', // TODO link
+      href: 'https://sahitya-rachanalu.vercel.app/',
     },
     {
       key: 'songs',
@@ -285,7 +285,7 @@ export const creative = {
       tag: 'Songs & credits',
       line: 'Alaka Yelanani, Dil Bezubaan and other published creative contributions.',
       uses: ['Songwriting', 'Storytelling', 'Release'],
-      href: '', // TODO link (Spotify / YouTube / credits page)
+      href: 'https://linktr.ee/Srihari1806',
     },
   ] as Exhibit[],
   cta: { label: 'Explore my creative side', href: '/creative' },

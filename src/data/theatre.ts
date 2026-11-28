@@ -29,6 +29,7 @@ export const records:MusicLink[]=[
   {title:'Alaka Yelanani',note:'Telugu single · Lyrics by Srihari. Music and vocals by Gopi Satwik.',url:'https://music.apple.com/us/album/alaka-yelanani-single/6807356478',image:'/cinema/prints/alaka-yelanani.jpg'},
   {title:'Dil Bezubaan',note:'Hindi single · Gopi Satwik. Lyrics by Chandan and Irfan.',url:'https://music.apple.com/us/album/dil-bezubaan-single/6808949190',image:'/cinema/prints/dil-bezubaan.jpg'},
 ];
+export const sahitya:MusicLink={title:'Sahitya Rachanalu',note:'Letters, lyrics and late-night ink — where my lyrics live.',url:'https://sahitya-rachanalu.vercel.app/'};
 // Only add soundtracks Srihari has explicitly chosen, with their exact public music URLs.
 export const favoriteSoundtracks:MusicLink[]=[];
 // The production company's own upload, matched to the marked-watched film page.

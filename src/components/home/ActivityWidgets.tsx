@@ -10,7 +10,8 @@ import film2 from '@/assets/home/film-2.jpg';
 import film3 from '@/assets/home/film-3.jpg';
 import lab from '@/assets/home/electronics-lab.jpg';
 import pixelDev from '@/assets/home/internet-raised-me.webp';
-import { filmDiary, nowPlaying } from '@/data/home';
+import { filmDiary } from '@/data/home';
+import { useNowPlaying } from './useNowPlaying';
 
 const posters = [film1, film2, film3];
 
@@ -55,13 +56,14 @@ function Stars({ rating }: { rating: number }) {
 }
 
 export function NowPlayingCard() {
-  const [playing, setPlaying] = useState(true);
-  const n = nowPlaying;
+  const [demoPlaying, setPlaying] = useState(true);
+  const n = useNowPlaying();
+  const playing = n.isDemo ? demoPlaying : n.playing;
   return (
     <article id="music" className="hm-card hm-card--music" aria-labelledby="hm-np-title">
       <CardHead
         dot="green"
-        title="Now playing"
+        title={n.label}
         id="hm-np-title"
         action={
           <span className={`hm-eq${playing ? ' is-playing' : ''}`} aria-hidden="true">
@@ -72,9 +74,22 @@ export function NowPlayingCard() {
         }
       />
       <div className="hm-np-body">
-        <Image src={album} alt="Album art for Evening Drive" className="hm-np-cover" sizes="120px" />
+        {n.art ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={n.art} alt={`Album art: ${n.title}`} className="hm-np-cover" width={120} height={120} />
+        ) : (
+          <Image src={album} alt="Album art for Evening Drive" className="hm-np-cover" sizes="120px" />
+        )}
         <div className="hm-np-info">
-          <p className="hm-np-track">{n.track}</p>
+          <p className="hm-np-track">
+            {n.isDemo ? (
+              n.title
+            ) : (
+              <a href={n.url} target="_blank" rel="noopener noreferrer">
+                {n.title}
+              </a>
+            )}
+          </p>
           <p className="hm-np-artist">{n.artist}</p>
           <div
             className="hm-np-progress"
@@ -88,8 +103,13 @@ export function NowPlayingCard() {
           </div>
           <p className="hm-np-time">
             {n.isDemo && <span className="hm-np-demo" title="Demo state — Spotify isn't connected yet">demo</span>}
-            {n.elapsed} / {n.duration}
+            {n.elapsed && n.duration ? `${n.elapsed} / ${n.duration}` : 'via Spotify'}
           </p>
+          {!n.isDemo ? (
+            <a className="hm-np-open" href={n.url} target="_blank" rel="noopener noreferrer">
+              Open in Spotify <ArrowUpRight aria-hidden="true" strokeWidth={1.8} />
+            </a>
+          ) : (
           <div className="hm-np-controls">
             <button type="button" aria-label="Shuffle (demo)"><Shuffle strokeWidth={1.8} /></button>
             <button type="button" aria-label="Previous track (demo)"><SkipBack strokeWidth={1.8} fill="currentColor" /></button>
@@ -105,6 +125,7 @@ export function NowPlayingCard() {
             <button type="button" aria-label="Next track (demo)"><SkipForward strokeWidth={1.8} fill="currentColor" /></button>
             <button type="button" aria-label="Repeat (demo)"><Repeat strokeWidth={1.8} /></button>
           </div>
+          )}
         </div>
       </div>
     </article>
@@ -125,7 +146,15 @@ export function FilmDiaryCard() {
         }
       />
       <p className="hm-card-sub">
-        Recent watches · {filmDiary.average} avg <Star className="hm-sub-star" aria-hidden="true" />
+        {filmDiary.isDemo ? (
+          <>
+            <span className="hm-np-demo" title="Placeholder stills — the live diary is on the cinema page">sample</span> · live diary on the cinema page
+          </>
+        ) : (
+          <>
+            Recent watches · {filmDiary.average} avg <Star className="hm-sub-star" aria-hidden="true" />
+          </>
+        )}
       </p>
       <ul className="hm-posters">
         {filmDiary.films.map((f, i) => (

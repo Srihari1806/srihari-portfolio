@@ -43,3 +43,16 @@ next-env.d.ts
 server.log
 
 .vercel
+
+# local scratch from Claude sessions
+/.claude-scratch/
+/.next-claude/
+setup-integrations.cmd
+integration-debug.cmd
+integration-debug.log
+spotify-connect.cmd
+spotify-auth.log
+Connect-Spotify.url
+push-env-to-vercel.cmd
+vercel-env.log
+.vercel-env-tmp/

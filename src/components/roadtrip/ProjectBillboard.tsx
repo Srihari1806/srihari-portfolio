@@ -95,8 +95,12 @@ export function ProjectPreview({ project, onClose }: { project: Project; onClose
               View live <ArrowUpRight aria-hidden="true" />
             </a>
             {project.caseStudy && (
-              <a className="rt-btn rt-btn--outline" href={project.caseStudy} target="_blank" rel="noopener noreferrer">
-                <FileText aria-hidden="true" /> Case study
+              <a
+                className="rt-btn rt-btn--outline"
+                href={project.caseStudy}
+                {...(project.caseStudy.startsWith('/') ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
+              >
+                <FileText aria-hidden="true" /> {project.caseStudy.startsWith('/') ? 'Project file' : 'Case study'}
               </a>
             )}
             {project.code && (

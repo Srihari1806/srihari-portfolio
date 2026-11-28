@@ -6,7 +6,9 @@
     "dev": "node server.js",
     "build": "next build",
     "start": "node server.js",
-    "lint": "next lint"
+    "lint": "next lint",
+    "spotify:auth": "node scripts/spotify-auth.mjs",
+    "check:integrations": "node scripts/check-integrations.mjs"
   },
   "dependencies": {
     "@fontsource-variable/anek-latin": "^5.3.0",
