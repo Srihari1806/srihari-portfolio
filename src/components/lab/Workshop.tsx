@@ -38,7 +38,7 @@ function Prop({ k }: { k: string }) {
           <rect x="-46" y="-92" width="16" height="24" fill="#b5735f" />
           <rect x="-24" y="-112" width="16" height="44" fill="#b5735f" />
           <rect x="-2" y="-100" width="16" height="32" fill="#b5735f" />
-          <rect x="20" y="-124" width="16" height="56" fill="#a4d105" />
+          <rect x="20" y="-124" width="16" height="56" fill="#c8820a" />
           <path d="M-40-112l22-14 22 8 26-18" stroke="#1c1d1a" strokeWidth="2.5" fill="none" />
         </g>
       );
@@ -109,7 +109,7 @@ export function Workshop() {
               <text x="0" y="62" textAnchor="middle" fontFamily="var(--serif)" fontWeight="700" fontSize="19" fill="#1c1d1a">
                 {s.name}
               </text>
-              <circle cx="-56" cy="77" r="4" fill={s.status === 'in-progress' ? '#d9902b' : '#6b8f1f'} />
+              <circle cx="-56" cy="77" r="4" fill={s.status === 'in-progress' ? '#d9902b' : '#896321'} />
               <text x="-46" y="81" fontFamily="var(--sans)" fontSize="11.5" fill="#4b4338">
                 {STATUS_LABEL[s.status]}
               </text>

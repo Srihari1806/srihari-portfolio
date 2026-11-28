@@ -52,7 +52,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-screen flex flex-col font-sans antialiased selection:bg-lime-300 selection:text-neutral-900 dark:selection:bg-lime-400 dark:selection:text-neutral-950">
+      <body className="min-h-screen flex flex-col font-sans antialiased selection:bg-amber-300 selection:text-neutral-900 dark:selection:bg-amber-400 dark:selection:text-neutral-950">
         <ModeProvider>
           <RoleProvider>
             <main className="flex-1">{children}</main>

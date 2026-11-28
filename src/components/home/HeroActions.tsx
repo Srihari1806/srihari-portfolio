@@ -1,13 +1,11 @@
 'use client';
 
-import { ArrowUpRight } from 'lucide-react';
-import { useRole } from '@/context/RoleContext';
-import { profile, resumeLink } from '@/data/profile';
+import { TrainFront } from 'lucide-react';
+import { REBOARD_EVENT } from '@/components/ride/journey';
+import { profile } from '@/data/profile';
 
 /** Hero buttons + the at-a-glance facts a recruiter scans for first. */
 export function HeroActions() {
-  const { activeRole } = useRole();
-  const cv = resumeLink(activeRole);
   return (
     <>
       <div className="hm-hero-actions">
@@ -17,14 +15,17 @@ export function HeroActions() {
           </svg>
           Explore my work
         </a>
-        <a
-          href={cv.href}
-          className="hm-btn hm-btn--outline"
-          {...(cv.isFile ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+        <button
+          type="button"
+          className="hm-btn hm-btn--outline hm-ride-btn"
+          onClick={() => {
+            window.scrollTo({ top: 0, behavior: 'auto' });
+            window.dispatchEvent(new Event(REBOARD_EVENT));
+          }}
         >
-          {cv.isFile ? 'View résumé' : cv.label}
-          <ArrowUpRight aria-hidden="true" strokeWidth={1.8} />
-        </a>
+          <TrainFront aria-hidden="true" strokeWidth={1.8} />
+          Take the train ride
+        </button>
       </div>
       <ul className="hm-hero-facts" aria-label="At a glance">
         <li>

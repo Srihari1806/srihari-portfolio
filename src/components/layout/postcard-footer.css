@@ -1,0 +1,50 @@
+/* Postcard footer — paper, ink, lime and the train palette, like the rest of the site. */
+.pc { margin: 72px 16px 0; padding-bottom: 28px; }
+.pc-card { position: relative; display: grid; gap: 26px; padding: 30px 24px; background: var(--paper, #fbf7ee); border: 1.3px solid var(--ink); border-radius: 16px; box-shadow: 0 6px 0 var(--ink);
+  background-image: radial-gradient(rgba(26, 21, 18, .05) 1px, transparent 1px); background-size: 14px 14px; }
+/* airmail edge */
+.pc-card::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 8px; border-radius: 16px 16px 0 0;
+  background: repeating-linear-gradient(-45deg, var(--red, #c8442b) 0 12px, var(--paper, #fbf7ee) 12px 24px, var(--teal, #0e4a48) 24px 36px, var(--paper, #fbf7ee) 36px 48px); }
+.pc-kicker { font: 600 11px var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+.pc-title { margin-top: 10px; font-family: var(--serif); font-weight: 700; font-variation-settings: 'opsz' 72; font-size: clamp(34px, 5.4vw, 58px); line-height: 1; letter-spacing: -.035em; color: #1a1512; max-width: 14ch; }
+.pc-mark { position: relative; z-index: 0; white-space: nowrap; }
+.pc-mark::after { content: ''; position: absolute; left: -2%; right: -2%; bottom: .06em; height: .2em; z-index: -1; background: var(--lime); border-radius: 40% 60% 50% 45%; transform: rotate(-1deg); }
+.pc-body { margin-top: 14px; max-width: 46ch; font: 400 17.5px/1.5 var(--serif); color: var(--ink-2); }
+.pc-cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.pc-btn { display: inline-flex; align-items: center; gap: 8px; height: 46px; padding: 0 20px; border: 1.3px solid var(--ink); border-radius: 999px; background: var(--paper, #fbf7ee); color: var(--ink); font: 600 14.5px var(--sans); transition: transform .15s, box-shadow .15s; }
+.pc-btn svg { width: 16px; height: 16px; }
+.pc-btn:hover { transform: translateY(-1px); box-shadow: 0 3px 0 var(--ink); }
+.pc-btn--lime { background: var(--lime); color: #1b1f10; }
+.pc-sign { margin-top: 18px; font: 26px var(--hand); color: var(--ink-2); transform: rotate(-3deg); width: fit-content; }
+.pc-side { position: relative; display: flex; flex-direction: column; gap: 12px; padding-top: 22px; border-top: 1px dashed var(--rule); }
+.pc-stamps { display: flex; justify-content: flex-end; align-items: flex-start; gap: 0; }
+.pc-postmark { width: 128px; margin-right: -30px; margin-top: 18px; transform: rotate(-12deg); opacity: .8; z-index: 1; }
+.pc-postmark svg { width: 100%; height: auto; fill: none; stroke: var(--red, #c8442b); stroke-width: 2; }
+.pc-postmark text { fill: var(--red, #c8442b); stroke: none; font: 700 8px var(--sans); letter-spacing: .14em; }
+.pc-postmark .pc-pm-big { font: 700 20px var(--serif); letter-spacing: 0; }
+.pc-postmark .pc-pm-small { font-size: 7.5px; }
+.pc-stamp { width: 92px; padding: 5px; background: var(--paper, #fbf7ee); outline: 2px dotted var(--ink); outline-offset: -1px; transform: rotate(4deg); box-shadow: 0 2px 4px rgba(0, 0, 0, .15); }
+.pc-stamp-in { display: grid; gap: 4px; padding: 8px 8px 6px; background: var(--amber-soft, #fbe6b8); border: 1px solid var(--ink); }
+.pc-stamp-in svg { width: 100%; height: auto; display: block; }
+.pc-stamp-in span { font: 700 11px var(--sans); letter-spacing: .08em; text-align: right; }
+.pc-to { margin-top: 6px; font: 22px var(--hand); color: var(--ink-2); }
+.pc-address { display: grid; }
+.pc-address li { border-bottom: 1px solid var(--rule); }
+.pc-address a { display: flex; align-items: center; gap: 10px; padding: 11px 2px; font: 500 15px var(--sans); color: var(--ink); overflow-wrap: anywhere; transition: color .15s; }
+.pc-address a:hover { color: var(--red, #c8442b); }
+.pc-address svg { flex: none; width: 16px; height: 16px; }
+.pc-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px; margin-top: 26px; padding: 0 4px; }
+.pc-foot nav { display: flex; flex-wrap: wrap; gap: 6px 18px; font: 600 13.5px var(--sans); }
+.pc-foot nav a { color: var(--ink-2); }
+.pc-foot nav a:hover { color: var(--ink); text-decoration: underline; text-decoration-color: var(--lime); text-decoration-thickness: 3px; text-underline-offset: 4px; }
+.pc-copy { font: 500 12.5px var(--sans); color: var(--muted); }
+.pc-top { display: inline-flex; align-items: center; gap: 6px; height: 38px; padding: 0 14px; border: 1.2px solid var(--ink); border-radius: 999px; font: 600 13px var(--sans); }
+.pc-top svg { width: 14px; height: 14px; }
+@media (min-width: 768px) {
+  .pc { margin: 90px 24px 0; }
+  .pc-card { grid-template-columns: 1.5fr 1fr; gap: 40px; padding: 44px 40px; }
+  .pc-side { padding: 0 0 0 36px; border-top: 0; border-left: 1px dashed var(--rule); }
+}
+@media (min-width: 1200px) { .pc { margin-left: 40px; margin-right: 40px; } }
+html.dark .pc-title { color: var(--ink); }
+html.dark .pc-card { background-color: var(--card); }

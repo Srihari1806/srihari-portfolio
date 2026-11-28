@@ -1,6 +1,6 @@
 'use client';
 
-/* The ride that opens the portfolio, on every load and refresh of the homepage: the departure board
+/* The ride that opens the portfolio, once per visit (the first homepage load of a browser session): the departure board
    (LoadingScreen), the dive into a coach window, then the cabin (RideCabin), where scrolling rides
    past every stop. Stepping off, or skipping, reveals the homepage underneath.
    Coming back from a stop ("Return to train", or the browser's Back) skips the board and puts the
@@ -10,7 +10,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import gsap from 'gsap';
 import { CABIN, stops } from '@/data/ride';
-import { REBOARD_EVENT, hasBooted, peekReturning, readJourney, saveJourney, takeReturning } from './journey';
+import { REBOARD_EVENT, hasBooted, markRideSeen, peekReturning, readJourney, rideSeen, saveJourney, takeReturning } from './journey';
 import { LoadingScreen, type LoadingHandle } from './LoadingScreen';
 import { RideCabin } from './RideCabin';
 import '@fontsource/vt323/400.css';
@@ -37,7 +37,8 @@ const MIN_LOAD_MS = 3400;
 function wantsSkip() {
   try {
     const q = new URLSearchParams(window.location.search);
-    return q.has('for') || q.get('ride') === 'skip';
+    if (q.get('ride') === 'on') return false;
+    return q.has('for') || q.get('ride') === 'skip' || rideSeen();
   } catch {
     return false;
   }
@@ -87,11 +88,13 @@ export function TrainRide() {
   }, [phase]);
 
   // deep links for recruiters skip the intro instantly (the head script already hid it before paint)
+  // …and so does a second homepage load in the same visit. The first one is remembered here.
   useEffect(() => {
     if (begin.phase === 'idle' && wantsSkip()) {
       saveJourney({ mode: 'off' });
       setPhase('gone');
     }
+    markRideSeen();
     document.documentElement.classList.remove('ride-skip');
   }, [begin.phase]);
 

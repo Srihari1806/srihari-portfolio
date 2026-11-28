@@ -7,7 +7,7 @@
 // Keep every message under 20 words. Empty hrefs ('') never render as fake links.
 
 export const contact = {
-  email: 'srihari.builds@gmail.com', // TODO verify — same address as the homepage
+  email: 'sriharibeesetti@gmail.com',
   linkedin: '', // TODO add your LinkedIn profile URL
   github: 'https://github.com/srihari1806', // TODO verify username
   resume: '/resume.pdf',

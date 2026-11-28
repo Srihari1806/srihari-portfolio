@@ -69,7 +69,7 @@ export function MissionProgress({
                 const p = model.sample(c.y);
                 return (
                   <g key={c.km} transform={`translate(${p.x} ${p.y})`}>
-                    <circle r={c.km === km ? 46 : 34} fill={c.km >= km ? '#D7FF31' : '#FAA356'} stroke="#24181a" strokeWidth={10} />
+                    <circle r={c.km === km ? 46 : 34} fill={c.km >= km ? '#faaf30' : '#FAA356'} stroke="#24181a" strokeWidth={10} />
                     <text y={16} textAnchor="middle" fontSize={44} fontWeight={800} fill="#24181a" fontFamily="system-ui, sans-serif">
                       {c.km}
                     </text>
@@ -84,7 +84,7 @@ export function MissionProgress({
             </g>
           </g>
           <g ref={arrowRef}>
-            <path d="M0 -8 L6 6 L0 3 L-6 6 Z" fill="#D7FF31" stroke="#24181a" strokeWidth="1.4" strokeLinejoin="round" />
+            <path d="M0 -8 L6 6 L0 3 L-6 6 Z" fill="#faaf30" stroke="#24181a" strokeWidth="1.4" strokeLinejoin="round" />
           </g>
           <text y="-46" textAnchor="middle" fontSize="7" fontWeight="800" fill="#F8F5EE" letterSpacing=".2em" fontFamily="system-ui, sans-serif">
             N

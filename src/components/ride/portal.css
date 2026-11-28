@@ -11,14 +11,14 @@
 
 .portal-back {
   position: fixed; z-index: 120; left: 16px; bottom: 16px; display: inline-flex; align-items: center; gap: 8px;
-  padding: 9px 14px 9px 11px; border-radius: 999px; border: 1px solid rgba(125, 255, 138, 0.35);
-  background: rgba(8, 12, 7, 0.82); color: #7dff8a; backdrop-filter: blur(8px); cursor: pointer;
+  padding: 9px 14px 9px 11px; border-radius: 999px; border: 1px solid rgba(255, 194, 90, 0.4);
+  background: rgba(28, 29, 26, 0.86); color: #ffc25a; backdrop-filter: blur(8px); cursor: pointer;
   font: 400 19px/1 'VT323', ui-monospace, Menlo, monospace; letter-spacing: 0.05em;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25); transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 }
 .portal-back svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.portal-back:hover { transform: translateY(-2px); border-color: #7dff8a; background: rgba(8, 12, 7, 0.92); }
-.portal-back:focus-visible { outline: 2px solid #7dff8a; outline-offset: 3px; }
+.portal-back:hover { transform: translateY(-2px); border-color: #ffc25a; background: rgba(28, 29, 26, 0.95); }
+.portal-back:focus-visible { outline: 2px solid #ffc25a; outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) { .portal-back { transition: none; } }
 /* per page: keep clear of each page's own controls */
 .portal-back--cinema { top: 66px; bottom: auto; }

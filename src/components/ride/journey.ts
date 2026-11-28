@@ -80,3 +80,19 @@ export function emitPortal(e: PortalEvent) {
 
 /** fired by "Board the train again" on the homepage: back into the cabin, no departure board */
 export const REBOARD_EVENT = 'srihari:reboard';
+
+/* --- once per visit: the full intro plays on the first homepage load of a browser session;
+   refreshes and later loads in the same session open straight on the homepage --- */
+export const SEEN_KEY = 'srihari_ride_seen';
+export function rideSeen(): boolean {
+  try {
+    return sessionStorage.getItem(SEEN_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+export function markRideSeen() {
+  try {
+    sessionStorage.setItem(SEEN_KEY, '1');
+  } catch {}
+}

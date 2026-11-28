@@ -432,7 +432,7 @@ export function SunsetRoad({
                 x={w / 2}
                 y={22 + k * 17}
                 textAnchor="middle"
-                fill={k === 0 ? '#D7FF31' : '#F8F5EE'}
+                fill={k === 0 ? '#faaf30' : '#F8F5EE'}
                 fontSize={k === 0 ? 12 : 12.5}
                 fontWeight={k === 0 ? 800 : 600}
                 letterSpacing={k === 0 ? '.14em' : '.02em'}

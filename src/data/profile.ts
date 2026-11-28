@@ -26,7 +26,7 @@ export const profile = {
 };
 
 export const links = {
-  email: 'srihari.builds@gmail.com', // TODO verify — carried over from the existing site
+  email: 'sriharibeesetti@gmail.com',
   linkedin: '', // TODO add your LinkedIn profile URL
   github: 'https://github.com/Srihari1806',
   cricfield: 'https://www.cricfield.in/',

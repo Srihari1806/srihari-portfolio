@@ -14,8 +14,8 @@ export function Bike({ className = '', beam = true }: { className?: string; beam
           <stop offset="1" stopColor="#fff6c2" stopOpacity="0" />
         </linearGradient>
         <radialGradient id="bk-tank" cx=".35" cy=".3" r=".8">
-          <stop offset="0" stopColor="#d6f45a" />
-          <stop offset=".55" stopColor="#a4d105" />
+          <stop offset="0" stopColor="#f0b758" />
+          <stop offset=".55" stopColor="#c8820a" />
           <stop offset="1" stopColor="#5d7a00" />
         </radialGradient>
         <radialGradient id="bk-helmet" cx=".35" cy=".3" r=".8">
@@ -42,10 +42,10 @@ export function Bike({ className = '', beam = true }: { className?: string; beam
       <ellipse cx="16" cy="34" rx="11.5" ry="6.5" fill="url(#bk-jacket)" />
       <path d="M6 36 L4 53 M26 36 L28 53" stroke="#2a3650" strokeWidth="3.2" strokeLinecap="round" />
       <circle cx="16" cy="35" r="6.2" fill="url(#bk-helmet)" />
-      <path d="M12 38.5 q4 2.6 8 0" stroke="#a4d105" strokeWidth="1.3" fill="none" />
+      <path d="M12 38.5 q4 2.6 8 0" stroke="#c8820a" strokeWidth="1.3" fill="none" />
       {/* fuel tank */}
       <ellipse cx="16" cy="47" rx="6.8" ry="8" fill="url(#bk-tank)" />
-      <path d="M16 40 v14" stroke="#eaff9c" strokeWidth=".9" opacity=".7" />
+      <path d="M16 40 v14" stroke="#fdda9e" strokeWidth=".9" opacity=".7" />
       {/* handlebar + mirrors */}
       <path d="M3 55 H29" stroke="#1b1b1b" strokeWidth="2.4" strokeLinecap="round" />
       <rect x="1.5" y="53.5" width="4" height="3" rx="1" fill="#0d0d0d" />
@@ -97,7 +97,7 @@ export function Car({ className = '', beam = true }: { className?: string; beam?
       {/* roof */}
       <rect x="11" y="24" width="28" height="31" rx="4" fill="#443b3d" />
       <path d="M14 27 h22" stroke="#FAA356" strokeWidth="1" opacity=".7" />
-      <path d="M25 4 V94" stroke="#D7FF31" strokeWidth="1.2" opacity=".55" />
+      <path d="M25 4 V94" stroke="#faaf30" strokeWidth="1.2" opacity=".55" />
       {/* side windows */}
       <path d="M8 24 L11 25 V54 L8 56 Z M42 24 L39 25 V54 L42 56 Z" fill="url(#cr-glass)" />
       {/* windscreen */}

@@ -74,7 +74,7 @@ html.ride-on, html.ride-on body { overflow: hidden !important; }
 .rl-train .rl-dive { fill: rgba(125, 255, 138, 0.14); }
 .rl-wheel { transform: rotate(var(--turn, 0deg)); }
 .rl-wheel circle { fill: #0a1209; }
-.rl-headlight { fill: #eaffd0; stroke: none; filter: drop-shadow(0 0 6px #eaffd0); }
+.rl-headlight { fill: #fde4b9; stroke: none; filter: drop-shadow(0 0 6px #fde4b9); }
 
 .rl-stations {
   position: relative; z-index: 2; list-style: none; margin: 0; padding: 0; width: min(1240px, 100%);
@@ -87,7 +87,7 @@ html.ride-on, html.ride-on body { overflow: hidden !important; }
 .rl-stations li b { font-weight: 400; font-size: clamp(16px, 1.65vw, 26px); letter-spacing: 0.08em; text-transform: uppercase; }
 .rl-stations li span { font-size: clamp(14px, 1.4vw, 22px); opacity: 0.9; }
 .rl-stations li.is-lit { color: var(--g); text-shadow: 0 0 8px var(--g-dim); }
-.rl-stations li.is-lit i { background: #eaffd0; border-color: #eaffd0; box-shadow: 0 0 12px var(--g); }
+.rl-stations li.is-lit i { background: #fde4b9; border-color: #fde4b9; box-shadow: 0 0 12px var(--g); }
 
 .rl-bar {
   position: relative; z-index: 2; margin-top: clamp(12px, 3.4vh, 34px); display: flex; align-items: center; gap: clamp(10px, 1.6vw, 22px);
@@ -174,7 +174,7 @@ html.ride-on, html.ride-on body { overflow: hidden !important; }
 .rc-line button { position: relative; display: flex; align-items: center; gap: 6px; background: none; border: 0; padding: 6px 8px; cursor: pointer; color: rgba(125, 255, 138, 0.55); font: 400 17px/1 var(--px); letter-spacing: 0.06em; text-transform: uppercase; }
 .rc-line button i { width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid currentColor; }
 .rc-line button[aria-current] { color: var(--g); text-shadow: 0 0 8px rgba(125, 255, 138, 0.6); }
-.rc-line button[aria-current] i { background: #eaffd0; border-color: #eaffd0; box-shadow: 0 0 8px var(--g); }
+.rc-line button[aria-current] i { background: #fde4b9; border-color: #fde4b9; box-shadow: 0 0 8px var(--g); }
 .rc-line button:focus-visible { outline: 1px dashed var(--g); }
 .rc-exit { font-size: 17px; }
 
